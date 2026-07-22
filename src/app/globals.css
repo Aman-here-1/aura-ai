@@ -5,12 +5,26 @@
   --foreground: #0f172a;
 
   --card: #ffffff;
-  --border: #e2e8f0;
+  --card-foreground: #0f172a;
+
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
 
   --primary: #2563eb;
-  --primary-hover: #1d4ed8;
+  --primary-foreground: #ffffff;
+
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
 
   --muted: #64748b;
+  --muted-foreground: #64748b;
+
+  --accent: #dbeafe;
+  --accent-foreground: #1e3a8a;
+
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #2563eb;
 
   --radius: 12px;
 }
@@ -32,17 +46,17 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
-button{
-cursor:pointer;
+button {
+  cursor: pointer;
 }
 
-a{
-text-decoration:none;
-color:inherit;
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
-.container{
-max-width:1280px;
-margin:auto;
-padding-inline:24px;
+.container {
+  max-width: 1280px;
+  margin: auto;
+  padding-inline: 24px;
 }

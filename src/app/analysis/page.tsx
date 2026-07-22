@@ -2,6 +2,7 @@ import AppShell from '../../components/layout/app-shell';
 import AnalysisProgress from '../analysis/analysis-progress';
 import AnalysisSummary from '../analysis/analysis-summary';
 import InsightList from '../analysis/insight-list';
+import DataPreview from '../analysis/data-preview';
 
 export default function AnalysisPage() {
   return (
@@ -20,6 +21,7 @@ export default function AnalysisPage() {
         <AnalysisSummary />
 
         <InsightList />
+        <DataPreview />
       </div>
     </AppShell>
   );

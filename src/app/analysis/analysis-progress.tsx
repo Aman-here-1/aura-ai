@@ -1,29 +1,42 @@
-import { BrainCircuit, Database, FileSpreadsheet, CheckCircle2 } from "lucide-react";
+"use client";
 
-const steps = [
-  {
-    title: "Reading Excel File",
-    status: "Completed",
-    icon: FileSpreadsheet,
-  },
-  {
-    title: "Cleaning Dataset",
-    status: "Completed",
-    icon: Database,
-  },
-  {
-    title: "Generating AI Insights",
-    status: "Running",
-    icon: BrainCircuit,
-  },
-  {
-    title: "Preparing Dashboard",
-    status: "Pending",
-    icon: CheckCircle2,
-  },
-];
+import {
+  BrainCircuit,
+  CheckCircle2,
+  Database,
+  FileSpreadsheet,
+} from "lucide-react";
+
+import { useDatasetStore } from "../../store/dataset-store";
 
 export default function AnalysisProgress() {
+  const { dataset } = useDatasetStore();
+
+  const isUploaded = !!dataset;
+
+  const steps = [
+    {
+      title: "Reading Excel File",
+      status: isUploaded ? "Completed" : "Pending",
+      icon: FileSpreadsheet,
+    },
+    {
+      title: "Analyzing Dataset",
+      status: isUploaded ? "Completed" : "Pending",
+      icon: Database,
+    },
+    {
+      title: "Generating KPIs & Charts",
+      status: isUploaded ? "Completed" : "Pending",
+      icon: BrainCircuit,
+    },
+    {
+      title: "Dashboard Ready",
+      status: isUploaded ? "Completed" : "Pending",
+      icon: CheckCircle2,
+    },
+  ];
+
   return (
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
       <h2 className="mb-6 text-xl font-semibold">
@@ -34,15 +47,27 @@ export default function AnalysisProgress() {
         {steps.map((step) => {
           const Icon = step.icon;
 
+          const completed = step.status === "Completed";
+
           return (
             <div
               key={step.title}
               className="flex items-center gap-4"
             >
-              <div className="rounded-xl bg-blue-100 p-3">
+              <div
+                className={`rounded-xl p-3 ${
+                  completed
+                    ? "bg-green-100"
+                    : "bg-slate-100"
+                }`}
+              >
                 <Icon
-                  className="text-blue-600"
                   size={22}
+                  className={
+                    completed
+                      ? "text-green-600"
+                      : "text-slate-500"
+                  }
                 />
               </div>
 
@@ -51,7 +76,13 @@ export default function AnalysisProgress() {
                   {step.title}
                 </p>
 
-                <p className="text-sm text-slate-500">
+                <p
+                  className={`text-sm ${
+                    completed
+                      ? "text-green-600"
+                      : "text-slate-500"
+                  }`}
+                >
                   {step.status}
                 </p>
               </div>
