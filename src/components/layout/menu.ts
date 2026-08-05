@@ -51,4 +51,9 @@ export const menu: MenuItem[] = [
     href: "/settings",
     icon: Settings,
   },
+  {
+    title: "Chat",
+    href: "/chat",
+    icon: Settings,
+  }
 ];
