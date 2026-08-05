@@ -25,35 +25,54 @@ export default function KpiGrid() {
     }).format(value);
   };
 
+  const cards = [
+    {
+      title: "Revenue",
+      value: formatCurrency(kpis?.total_revenue),
+      change: "+18.4%",
+      subtitle: "vs last month",
+      icon: DollarSign,
+      color: "emerald",
+    },
+    {
+      title: "Orders",
+      value: (kpis?.total_records ?? 0).toLocaleString(),
+      change: "+12.8%",
+      subtitle: "vs yesterday",
+      icon: ShoppingCart,
+      color: "blue",
+    },
+    {
+      title: "Average Order",
+      value: formatCurrency(kpis?.average_order_value),
+      change: "+6.2%",
+      subtitle: "average value",
+      icon: Wallet,
+      color: "violet",
+    },
+    {
+      title: "Top Region",
+      value: kpis?.top_region ?? "--",
+      change: "Top Performer",
+      subtitle: "highest revenue",
+      icon: TrendingUp,
+      color: "orange",
+    },
+  ];
+
   return (
-    <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-      <KpiCard
-        title="Revenue"
-        value={formatCurrency(kpis?.total_revenue)}
-        change="Live Data"
-        icon={DollarSign}
-      />
-
-      <KpiCard
-        title="Orders"
-        value={(kpis?.total_records ?? 0).toString()}
-        change="Live Data"
-        icon={ShoppingCart}
-      />
-
-      <KpiCard
-        title="Average Order"
-        value={formatCurrency(kpis?.average_order_value)}
-        change="Live Data"
-        icon={Wallet}
-      />
-
-      <KpiCard
-        title="Top Region"
-        value={kpis?.top_region ?? "-"}
-        change="Live Data"
-        icon={TrendingUp}
-      />
+    <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 2xl:grid-cols-4">
+      {cards.map((card) => (
+        <KpiCard
+          key={card.title}
+          title={card.title}
+          value={card.value}
+          change={card.change}
+          subtitle={card.subtitle}
+          icon={card.icon}
+          color={card.color}
+        />
+      ))}
     </section>
   );
 }

@@ -1,9 +1,9 @@
 "use client";
 
 import {
+  Area,
+  AreaChart,
   CartesianGrid,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -18,15 +18,21 @@ export default function RevenueChart() {
 
   const chartData = dataset?.chart_data?.sales_trend ?? [];
 
-  // Convert backend response to chart format
   const formattedData = chartData.map((item: any) => ({
-    month: item.Order_Date ?? item.month ?? item.date,
+    month:
+      item.Order_Date ??
+      item.month ??
+      item.date ??
+      item.label,
+
     revenue:
-      item.Sales_Amount ??
-      item.sales ??
-      item.revenue ??
-      item.value ??
-      0,
+      Number(
+        item.Sales_Amount ??
+        item.sales ??
+        item.revenue ??
+        item.value ??
+        0
+      ),
   }));
 
   return (
@@ -34,30 +40,101 @@ export default function RevenueChart() {
       title="Revenue Overview"
       subtitle="Revenue trend from uploaded dataset"
     >
-      <div className="h-[360px] w-full">
+      <div className="h-[420px] w-full">
+
         {formattedData.length === 0 ? (
-          <div className="flex h-full items-center justify-center text-slate-500">
-            Upload a dataset to view the revenue trend.
+          <div className="flex h-full flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50">
+
+            <h3 className="text-lg font-semibold text-slate-700">
+              No Revenue Data
+            </h3>
+
+            <p className="mt-2 text-sm text-slate-500">
+              Upload an Excel or CSV file to visualize revenue trends.
+            </p>
+
           </div>
         ) : (
+
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={formattedData}>
-              <CartesianGrid strokeDasharray="3 3" />
+            <AreaChart data={formattedData}>
 
-              <XAxis dataKey="month" />
+              <defs>
 
-              <YAxis />
+                <linearGradient
+                  id="revenueGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop
+                    offset="0%"
+                    stopColor="#2563EB"
+                    stopOpacity={0.35}
+                  />
 
-              <Tooltip />
+                  <stop
+                    offset="100%"
+                    stopColor="#2563EB"
+                    stopOpacity={0}
+                  />
+                </linearGradient>
 
-              <Line
+              </defs>
+
+              <CartesianGrid
+                vertical={false}
+                stroke="#E2E8F0"
+                strokeDasharray="4 4"
+              />
+
+              <XAxis
+                dataKey="month"
+                tick={{
+                  fontSize: 12,
+                  fill: "#64748B",
+                }}
+                tickLine={false}
+                axisLine={false}
+              />
+
+              <YAxis
+                tick={{
+                  fontSize: 12,
+                  fill: "#64748B",
+                }}
+                tickLine={false}
+                axisLine={false}
+              />
+
+              <Tooltip
+                contentStyle={{
+                  borderRadius: 16,
+                  border: "1px solid #E2E8F0",
+                  boxShadow:
+                    "0 10px 30px rgba(15,23,42,.10)",
+                }}
+              />
+
+              <Area
                 type="monotone"
                 dataKey="revenue"
-                stroke="#2563eb"
-                strokeWidth={3}
+                stroke="#2563EB"
+                strokeWidth={4}
+                fill="url(#revenueGradient)"
+                dot={{
+                  r: 4,
+                  fill: "#2563EB",
+                }}
+                activeDot={{
+                  r: 7,
+                }}
               />
-            </LineChart>
+
+            </AreaChart>
           </ResponsiveContainer>
+
         )}
       </div>
     </ChartCard>
