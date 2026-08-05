@@ -2,16 +2,45 @@ import { create } from "zustand";
 
 export interface AIReport {
   summary: string;
+
   insights: string[];
+
   recommendations: string[];
+
   risks: string[];
-  actionPlan: string[];
+
+  action_plan: string[];
+
+  forecast: Record<string, unknown>;
+
+  trend: Record<string, unknown>;
+
+  data_quality: Record<string, unknown>;
+
+  anomalies: Record<string, unknown>[];
+
+  correlation: Record<string, unknown>;
+
+  root_causes: string[];
+
+  business_rules: Record<string, unknown>[];
+
+  narrative: string;
+
+  explainability: Record<string, unknown>[];
+
+  seasonality: Record<string, unknown>;
+
+  statistics: Record<string, unknown>;
 }
 
 export interface AnalysisData {
   headers: string[];
+
   preview: Record<string, unknown>[];
+
   intelligence: Record<string, unknown>;
+
   kpis: Record<string, unknown>;
 
   charts: Record<string, unknown>;

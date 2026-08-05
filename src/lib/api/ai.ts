@@ -11,29 +11,61 @@ export interface GenerateAIReportRequest {
 
 export interface AIReport {
   summary: string;
+
   insights: string[];
+
   recommendations: string[];
+
   risks: string[];
-  actionPlan: string[];
+
+  action_plan: string[];
+
+  forecast: Record<string, unknown>;
+
+  trend: Record<string, unknown>;
+
+  data_quality: Record<string, unknown>;
+
+  anomalies: Record<string, unknown>[];
+
+  correlation: Record<string, unknown>;
+
+  root_causes: string[];
+
+  business_rules: Record<string, unknown>[];
+
+  narrative: string;
+
+  explainability: Record<string, unknown>[];
+
+  seasonality: Record<string, unknown>;
+
+  statistics: Record<string, unknown>;
 }
 
 async function request<T>(
   endpoint: string,
   options?: RequestInit
 ): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options?.headers ?? {}),
-    },
-  });
+  const response = await fetch(
+    `${API_BASE_URL}${endpoint}`,
+    {
+      ...options,
+      headers: {
+        "Content-Type":
+          "application/json",
+        ...(options?.headers ?? {}),
+      },
+    }
+  );
 
   if (!response.ok) {
-    let message = "Something went wrong.";
+    let message =
+      "Something went wrong.";
 
     try {
-      const error = await response.json();
+      const error =
+        await response.json();
 
       message =
         error.detail ??
@@ -50,10 +82,13 @@ async function request<T>(
 export async function generateAIReport(
   data: GenerateAIReportRequest
 ): Promise<AIReport> {
-  return request<AIReport>("/api/ai/report", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+  return request<AIReport>(
+    "/api/ai/report",
+    {
+      method: "POST",
+      body: JSON.stringify(data),
+    }
+  );
 }
 
 export async function healthCheck() {
@@ -62,7 +97,9 @@ export async function healthCheck() {
 
 export interface UploadResponse {
   rows: number;
+
   columns: number;
+
   headers: string[];
 
   intelligence: {
@@ -86,32 +123,35 @@ export interface UploadResponse {
 export async function uploadExcel(
   file: File
 ): Promise<UploadResponse> {
+  const formData =
+    new FormData();
 
-  const formData = new FormData();
-
-  formData.append("file", file);
-
-  const response = await fetch(
-    `${API_BASE_URL}/api/upload`,
-    {
-      method: "POST",
-      body: formData,
-    }
+  formData.append(
+    "file",
+    file
   );
 
-  if (!response.ok) {
+  const response =
+    await fetch(
+      `${API_BASE_URL}/api/upload`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
 
-    let message = "Upload failed.";
+  if (!response.ok) {
+    let message =
+      "Upload failed.";
 
     try {
-
-      const error = await response.json();
+      const error =
+        await response.json();
 
       message =
         error.detail ??
         error.message ??
         message;
-
     } catch {}
 
     throw new Error(message);

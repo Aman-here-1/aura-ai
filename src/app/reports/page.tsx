@@ -4,9 +4,20 @@ import Link from "next/link";
 import { ArrowLeft, FileText } from "lucide-react";
 
 import AppShell from "../../components/layout/app-shell";
+
 import ExecutiveSummary from "../../components/ai/executive-summary";
 import BusinessInsights from "../../components/reports/business-insights";
 import Recommendations from "../../components/reports/recommendations";
+import ForecastCard from "../../components/reports/forecast-card";
+import TrendCard from "../../components/reports/trend-card";
+import DataQualityCard from "../../components/reports/data-quality-card";
+import CorrelationCard from "../../components/reports/correlation-card";
+import RootCauseCard from "../../components/reports/root-cause-card";
+import BusinessRulesCard from "../../components/reports/business-rules-card";
+import StatisticsCard from "../../components/reports/statistics-card";
+import SeasonalityCard from "../../components/reports/seasonality-card";
+import ExplainabilityCard from "../../components/reports/explainability-card";
+import NarrativeCard from "../../components/reports/narrative-card";
 
 import { useAnalysisStore } from "../../store/analysis-store";
 
@@ -52,7 +63,9 @@ export default function ReportsPage() {
 
   return (
     <AppShell>
+
       <div className="mb-8">
+
         <h1 className="text-4xl font-bold text-slate-900">
           AI Business Report
         </h1>
@@ -60,12 +73,53 @@ export default function ReportsPage() {
         <p className="mt-2 text-slate-500">
           Executive summary and AI-generated business insights.
         </p>
+
       </div>
 
       <div className="space-y-6">
 
         <ExecutiveSummary
           summary={report.summary}
+        />
+
+        <ForecastCard
+          forecast={report.forecast}
+        />
+
+        <TrendCard
+          trend={report.trend}
+        />
+
+        <DataQualityCard
+          dataQuality={report.data_quality}
+        />
+
+        <CorrelationCard
+          correlation={report.correlation}
+        />
+
+        <RootCauseCard
+          rootCauses={report.root_causes}
+        />
+
+        <BusinessRulesCard
+          rules={report.business_rules}
+        />
+
+        <StatisticsCard
+          statistics={report.statistics}
+        />
+
+        <SeasonalityCard
+          seasonality={report.seasonality}
+        />
+
+        <ExplainabilityCard
+          explainability={report.explainability}
+        />
+
+        <NarrativeCard
+          narrative={report.narrative}
         />
 
         <BusinessInsights
@@ -77,6 +131,7 @@ export default function ReportsPage() {
         />
 
       </div>
+
     </AppShell>
   );
 }

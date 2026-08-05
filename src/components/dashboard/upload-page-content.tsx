@@ -90,9 +90,12 @@ export default function UploadPageContent() {
         preview: data.preview ?? [],
         intelligence: data.intelligence ?? {},
         kpis: data.kpis ?? {},
+
         charts: data.chart_data ?? {},
+
         recommendedCharts:
           data.recommended_charts ?? [],
+
         aiReport,
       });
 
