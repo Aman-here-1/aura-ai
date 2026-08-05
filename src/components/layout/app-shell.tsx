@@ -6,20 +6,26 @@ interface AppShellProps {
   children: ReactNode;
 }
 
-export default function AppShell({ children }: AppShellProps) {
+export default function AppShell({
+  children,
+}: AppShellProps) {
   return (
-    <div className="flex h-screen bg-[#F8FAFC]">
+    <div className="flex min-h-screen bg-slate-50">
+
       <Sidebar />
 
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex min-w-0 flex-1 flex-col">
+
         <Navbar />
 
-        <main className="flex-1 overflow-y-auto px-8 py-6">
-          <div className="w-full">
+        <main className="flex-1 overflow-y-auto">
+          <div className="mx-auto w-full max-w-[1700px] px-6 py-6 lg:px-8">
             {children}
           </div>
         </main>
+
       </div>
+
     </div>
   );
 }

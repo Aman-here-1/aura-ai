@@ -8,56 +8,92 @@ export interface AIReport {
   actionPlan: string[];
 }
 
-interface AnalysisState {
-  // Dataset
+export interface AnalysisData {
   headers: string[];
   preview: Record<string, unknown>[];
   intelligence: Record<string, unknown>;
   kpis: Record<string, unknown>;
 
-  // AI Report
+  charts: Record<string, unknown>;
+
+  recommendedCharts: unknown[];
+
+  aiReport: AIReport | null;
+}
+
+interface AnalysisState {
+  analysis: AnalysisData | null;
+
   report: AIReport | null;
 
-  // Actions
-  setAnalysis: (data: {
-    headers: string[];
-    preview: Record<string, unknown>[];
-    intelligence: Record<string, unknown>;
-    kpis: Record<string, unknown>;
-  }) => void;
+  loading: boolean;
+
+  error: string | null;
+
+  hasAnalysis: boolean;
+
+  setAnalysis: (data: AnalysisData) => void;
 
   setReport: (report: AIReport) => void;
+
+  clearReport: () => void;
+
+  setLoading: (loading: boolean) => void;
+
+  setError: (error: string | null) => void;
 
   resetAnalysis: () => void;
 }
 
 export const useAnalysisStore = create<AnalysisState>((set) => ({
-  headers: [],
-  preview: [],
-  intelligence: {},
-  kpis: {},
+  analysis: null,
 
   report: null,
 
+  loading: false,
+
+  error: null,
+
+  hasAnalysis: false,
+
   setAnalysis: (data) =>
     set({
-      headers: data.headers,
-      preview: data.preview,
-      intelligence: data.intelligence,
-      kpis: data.kpis,
+      analysis: data,
+      report: data.aiReport,
+      hasAnalysis: true,
+      loading: false,
+      error: null,
     }),
 
   setReport: (report) =>
     set({
       report,
+      loading: false,
+      error: null,
+    }),
+
+  clearReport: () =>
+    set({
+      report: null,
+    }),
+
+  setLoading: (loading) =>
+    set({
+      loading,
+    }),
+
+  setError: (error) =>
+    set({
+      error,
+      loading: false,
     }),
 
   resetAnalysis: () =>
     set({
-      headers: [],
-      preview: [],
-      intelligence: {},
-      kpis: {},
+      analysis: null,
       report: null,
+      loading: false,
+      error: null,
+      hasAnalysis: false,
     }),
 }));

@@ -23,16 +23,16 @@ export default function RevenueChart() {
       item.Order_Date ??
       item.month ??
       item.date ??
-      item.label,
+      item.label ??
+      "-",
 
-    revenue:
-      Number(
-        item.Sales_Amount ??
+    revenue: Number(
+      item.Sales_Amount ??
         item.sales ??
         item.revenue ??
         item.value ??
         0
-      ),
+    ),
   }));
 
   return (
@@ -41,26 +41,28 @@ export default function RevenueChart() {
       subtitle="Revenue trend from uploaded dataset"
     >
       <div className="h-[420px] w-full">
-
         {formattedData.length === 0 ? (
-          <div className="flex h-full flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50">
-
+          <div className="flex h-full flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 text-center">
             <h3 className="text-lg font-semibold text-slate-700">
               No Revenue Data
             </h3>
 
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 max-w-sm text-sm leading-6 text-slate-500">
               Upload an Excel or CSV file to visualize revenue trends.
             </p>
-
           </div>
         ) : (
-
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={formattedData}>
-
+            <AreaChart
+              data={formattedData}
+              margin={{
+                top: 10,
+                right: 10,
+                left: -20,
+                bottom: 0,
+              }}
+            >
               <defs>
-
                 <linearGradient
                   id="revenueGradient"
                   x1="0"
@@ -69,18 +71,17 @@ export default function RevenueChart() {
                   y2="1"
                 >
                   <stop
-                    offset="0%"
+                    offset="5%"
                     stopColor="#2563EB"
-                    stopOpacity={0.35}
+                    stopOpacity={0.28}
                   />
 
                   <stop
-                    offset="100%"
+                    offset="95%"
                     stopColor="#2563EB"
                     stopOpacity={0}
                   />
                 </linearGradient>
-
               </defs>
 
               <CartesianGrid
@@ -95,6 +96,7 @@ export default function RevenueChart() {
                   fontSize: 12,
                   fill: "#64748B",
                 }}
+                tickMargin={10}
                 tickLine={false}
                 axisLine={false}
               />
@@ -104,14 +106,31 @@ export default function RevenueChart() {
                   fontSize: 12,
                   fill: "#64748B",
                 }}
+                tickFormatter={(value) =>
+                  new Intl.NumberFormat("en-IN", {
+                    notation: "compact",
+                    maximumFractionDigits: 1,
+                  }).format(Number(value))
+                }
+                tickMargin={10}
                 tickLine={false}
                 axisLine={false}
               />
 
               <Tooltip
+                formatter={(value: number) => [
+                  new Intl.NumberFormat("en-IN", {
+                    style: "currency",
+                    currency: "INR",
+                    maximumFractionDigits: 0,
+                  }).format(value),
+                  "Revenue",
+                ]}
+                labelFormatter={(label) => `Period: ${label}`}
                 contentStyle={{
                   borderRadius: 16,
                   border: "1px solid #E2E8F0",
+                  background: "#FFFFFF",
                   boxShadow:
                     "0 10px 30px rgba(15,23,42,.10)",
                 }}
@@ -121,20 +140,18 @@ export default function RevenueChart() {
                 type="monotone"
                 dataKey="revenue"
                 stroke="#2563EB"
-                strokeWidth={4}
+                strokeWidth={3}
                 fill="url(#revenueGradient)"
-                dot={{
-                  r: 4,
-                  fill: "#2563EB",
-                }}
+                dot={false}
                 activeDot={{
-                  r: 7,
+                  r: 6,
+                  fill: "#2563EB",
+                  stroke: "#FFFFFF",
+                  strokeWidth: 3,
                 }}
               />
-
             </AreaChart>
           </ResponsiveContainer>
-
         )}
       </div>
     </ChartCard>

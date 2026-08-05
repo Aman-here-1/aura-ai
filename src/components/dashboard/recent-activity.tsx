@@ -8,6 +8,7 @@ import {
 const activities = [
   {
     title: "sales_july.csv uploaded",
+    description: "Dataset uploaded successfully.",
     time: "2 min ago",
     icon: FileSpreadsheet,
     color: "text-green-600",
@@ -15,6 +16,7 @@ const activities = [
   },
   {
     title: "Revenue report generated",
+    description: "AI created a revenue performance report.",
     time: "10 min ago",
     icon: FileText,
     color: "text-blue-600",
@@ -22,13 +24,15 @@ const activities = [
   },
   {
     title: "Aura AI completed analysis",
+    description: "Business insights are ready for review.",
     time: "15 min ago",
     icon: Sparkles,
     color: "text-purple-600",
     bg: "bg-purple-100",
   },
   {
-    title: "Dashboard synced successfully",
+    title: "Dashboard synchronized",
+    description: "Latest dataset has been reflected.",
     time: "22 min ago",
     icon: CheckCircle2,
     color: "text-emerald-600",
@@ -38,38 +42,57 @@ const activities = [
 
 export default function RecentActivity() {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-6 text-xl font-semibold">
-        Recent Activity
-      </h2>
+    <div className="rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:shadow-lg">
+      <div className="border-b border-slate-100 px-6 py-5">
+        <h2 className="text-xl font-bold text-slate-900">
+          Recent Activity
+        </h2>
 
-      <div className="space-y-5">
-        {activities.map((activity) => {
-          const Icon = activity.icon;
+        <p className="mt-1 text-sm text-slate-500">
+          Latest actions performed in Aura AI
+        </p>
+      </div>
 
-          return (
-            <div
-              key={activity.title}
-              className="flex items-center gap-4"
-            >
+      <div className="p-6">
+        <div className="space-y-5">
+          {activities.map((activity) => {
+            const Icon = activity.icon;
+
+            return (
               <div
-                className={`flex h-11 w-11 items-center justify-center rounded-xl ${activity.bg}`}
+                key={activity.title}
+                className="flex items-start gap-4"
               >
-                <Icon className={activity.color} size={20} />
-              </div>
+                <div
+                  className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl ${activity.bg}`}
+                >
+                  <Icon
+                    size={20}
+                    className={activity.color}
+                  />
+                </div>
 
-              <div className="flex-1">
-                <p className="font-medium text-slate-900">
-                  {activity.title}
-                </p>
+                <div className="flex-1">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className="font-semibold text-slate-900">
+                        {activity.title}
+                      </h3>
 
-                <p className="text-sm text-slate-500">
-                  {activity.time}
-                </p>
+                      <p className="mt-1 text-sm leading-5 text-slate-500">
+                        {activity.description}
+                      </p>
+                    </div>
+
+                    <span className="whitespace-nowrap text-xs text-slate-400">
+                      {activity.time}
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );

@@ -1,24 +1,79 @@
 import { create } from "zustand";
 
-interface DatasetState {
-  dataset: any;
+export interface Dataset {
+  rows: number;
+  columns: number;
+  headers: string[];
 
-  setDataset: (data: any) => void;
+  intelligence?: Record<string, any>;
 
-  clearDataset: () => void;
+  kpis?: {
+    total_revenue?: number;
+    total_records?: number;
+    average_order_value?: number;
+    top_region?: string;
+    top_product?: string;
+  };
+
+  chart_data?: {
+    sales_trend?: any[];
+    [key: string]: any;
+  };
+
+  preview?: any[];
 }
 
-export const useDatasetStore =
-  create<DatasetState>((set) => ({
-    dataset: null,
+interface DatasetState {
+  dataset: Dataset | null;
 
-    setDataset: (data) =>
-      set({
-        dataset: data,
-      }),
+  loading: boolean;
 
-    clearDataset: () =>
-      set({
-        dataset: null,
-      }),
-  }));
+  error: string |null;
+
+  hasDataset: boolean;
+
+  setDataset: (data: Dataset) => void;
+
+  clearDataset: () => void;
+
+  setLoading: (loading: boolean) => void;
+
+  setError: (error: string | null) => void;
+}
+
+export const useDatasetStore = create<DatasetState>((set) => ({
+  dataset: null,
+
+  loading: false,
+
+  error: null,
+
+  hasDataset: false,
+
+  setDataset: (data) =>
+    set({
+      dataset: data,
+      hasDataset: true,
+      loading: false,
+      error: null,
+    }),
+
+  clearDataset: () =>
+    set({
+      dataset: null,
+      hasDataset: false,
+      loading: false,
+      error: null,
+    }),
+
+  setLoading: (loading) =>
+    set({
+      loading,
+    }),
+
+  setError: (error) =>
+    set({
+      error,
+      loading: false,
+    }),
+}));

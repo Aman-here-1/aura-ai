@@ -21,7 +21,8 @@ export default function KpiGrid() {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
-      maximumFractionDigits: 0,
+      notation: "compact",
+      maximumFractionDigits: 1,
     }).format(value);
   };
 
@@ -29,39 +30,39 @@ export default function KpiGrid() {
     {
       title: "Revenue",
       value: formatCurrency(kpis?.total_revenue),
-      change: "+18.4%",
-      subtitle: "vs last month",
+      change: dataset ? "Live Data" : "--",
+      subtitle: "Total Revenue",
       icon: DollarSign,
-      color: "emerald",
+      color: "emerald" as const,
     },
     {
       title: "Orders",
       value: (kpis?.total_records ?? 0).toLocaleString(),
-      change: "+12.8%",
-      subtitle: "vs yesterday",
+      change: dataset ? "Live Data" : "--",
+      subtitle: "Total Orders",
       icon: ShoppingCart,
-      color: "blue",
+      color: "blue" as const,
     },
     {
-      title: "Average Order",
+      title: "Avg Order",
       value: formatCurrency(kpis?.average_order_value),
-      change: "+6.2%",
-      subtitle: "average value",
+      change: dataset ? "Live Data" : "--",
+      subtitle: "Average Value",
       icon: Wallet,
-      color: "violet",
+      color: "violet" as const,
     },
     {
       title: "Top Region",
       value: kpis?.top_region ?? "--",
-      change: "Top Performer",
-      subtitle: "highest revenue",
+      change: dataset ? "Detected" : "--",
+      subtitle: "Highest Sales",
       icon: TrendingUp,
-      color: "orange",
+      color: "orange" as const,
     },
   ];
 
   return (
-    <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 2xl:grid-cols-4">
+    <section className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
       {cards.map((card) => (
         <KpiCard
           key={card.title}

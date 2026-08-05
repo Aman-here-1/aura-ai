@@ -11,34 +11,34 @@ export default function Home() {
     <AppShell>
       <DashboardHeader />
 
-      <div className="mt-8">
+      <section className="mt-8">
         <KpiGrid />
-      </div>
+      </section>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+      <section className="mt-8 grid gap-6 xl:grid-cols-12">
+
+        <div className="xl:col-span-8">
           <RevenueChart />
         </div>
 
-        <AiInsightPanel />
-      </div>
+        <div className="xl:col-span-4">
+          <AiInsightPanel />
+        </div>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <RecentActivity />
+      </section>
 
-        <QuickActions />
-      </div>
+      <section className="mt-8 grid gap-6 xl:grid-cols-12">
 
-      {/* Tailwind Test */}
-      <div className="mt-8 rounded-xl bg-red-500 p-6 text-white shadow-xl">
-        <h2 className="text-2xl font-bold">
-          Tailwind Working ✅
-        </h2>
+        <div className="xl:col-span-7">
+          <RecentActivity />
+        </div>
 
-        <p className="mt-2">
-          If you can see this red box with white text, Tailwind CSS is working correctly.
-        </p>
-      </div>
+        <div className="xl:col-span-5">
+          <QuickActions />
+        </div>
+
+      </section>
+
     </AppShell>
   );
 }
