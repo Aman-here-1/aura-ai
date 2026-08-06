@@ -41,6 +41,9 @@ export default function ChatWindow() {
             rows={message.rows}
             columns={message.columns}
             chart={message.chart}
+            insight={message.insight}
+            executive={message.executive}
+            suggestions={message.suggestions}
           />
 
         ))}
@@ -54,4 +57,5 @@ export default function ChatWindow() {
     </div>
 
   );
+
 }

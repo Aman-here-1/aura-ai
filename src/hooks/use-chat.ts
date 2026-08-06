@@ -29,7 +29,9 @@ export function useChat() {
 
       console.error("❌ Analysis is NULL");
 
-      alert("No analysis found. Please upload a dataset first.");
+      alert(
+        "No analysis found. Please upload a dataset first.",
+      );
 
       return;
 
@@ -84,16 +86,32 @@ export function useChat() {
         chart:
           response.chart,
 
+        insight:
+          response.insight,
+
+        executive:
+          response.executive,
+
+        business_metrics:
+          response.business_metrics,
+
+        root_cause:
+          response.root_cause,
+
         suggestions:
           response.suggestions,
 
       });
 
-      console.log("✅ Assistant Message Added");
+      console.log(
+        "✅ Assistant Message Added",
+      );
 
     } catch (error) {
 
-      console.error("❌ Chat Error");
+      console.error(
+        "❌ Chat Error",
+      );
 
       console.error(error);
 
@@ -114,7 +132,9 @@ export function useChat() {
 
       setLoading(false);
 
-      console.log("========== END ==========");
+      console.log(
+        "========== END ==========",
+      );
 
     }
 
