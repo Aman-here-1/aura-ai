@@ -7,34 +7,31 @@ import DataPreview from "./data-preview";
 export default function AnalysisPage() {
   return (
     <AppShell>
-      <div className="mb-8">
+      <div className="flex flex-col gap-8 py-6 lg:gap-10 lg:py-8">
+        <section>
+          <h1 className="text-4xl font-bold text-slate-900">
+            AI Analysis
+          </h1>
 
-        <h1 className="text-4xl font-bold text-slate-900">
-          AI Analysis
-        </h1>
+          <p className="mt-4 max-w-2xl text-slate-500">
+            Aura AI has analyzed your uploaded dataset and generated
+            intelligent insights, KPIs, business trends and actionable
+            recommendations.
+          </p>
+        </section>
 
-        <p className="mt-2 max-w-2xl text-slate-500">
-          Aura AI has analyzed your uploaded dataset and generated
-          intelligent insights, KPIs, business trends and actionable
-          recommendations.
-        </p>
+        <section>
+          <AnalysisProgress />
+        </section>
 
-      </div>
+        <section>
+          <AnalysisSummary />
+        </section>
 
-      <div className="space-y-6">
-
-        <AnalysisProgress />
-
-        <AnalysisSummary />
-
-        <div className="grid gap-6 xl:grid-cols-2">
-
+        <section className="grid gap-6 xl:grid-cols-2">
           <InsightList />
-
           <DataPreview />
-
-        </div>
-
+        </section>
       </div>
     </AppShell>
   );

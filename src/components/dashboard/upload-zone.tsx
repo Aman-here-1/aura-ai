@@ -43,11 +43,11 @@ export default function UploadZone({
   return (
     <div
       {...getRootProps()}
-      className={`group relative overflow-hidden rounded-3xl border-2 border-dashed bg-white p-12 text-center transition-all duration-300 ${
-        isDragActive
-          ? "border-blue-600 bg-blue-50 shadow-2xl"
-          : "border-slate-300 shadow-sm hover:border-blue-500 hover:shadow-xl"
-      }`}
+      className={`group relative mt-8 overflow-hidden rounded-3xl border-2 border-dashed bg-white p-12 text-center transition-all duration-300 lg:mt-10 ${
+  isDragActive
+    ? "border-blue-600 bg-blue-50 shadow-2xl"
+    : "border-slate-300 shadow-sm hover:border-blue-500 hover:shadow-xl"
+}`}
     >
       <input {...getInputProps()} />
 
@@ -55,18 +55,17 @@ export default function UploadZone({
 
       <div className="relative">
 
-        <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-xl transition-transform duration-300 group-hover:scale-110">
-          <UploadCloud
-            size={42}
-            className="text-white"
-          />
-        </div>
+        <div className="flex w-full justify-center">
+  <div className="flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-xl transition-transform duration-300 group-hover:scale-110">
+    <UploadCloud size={42} className="text-white" />
+  </div>
+</div>
 
         <h2 className="mt-8 text-4xl font-bold tracking-tight text-slate-900">
           Upload Your Dataset
         </h2>
 
-        <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-500">
+        <p className="mx-auto max-w-2xl text-base leading-7 text-slate-500">
           Drag & drop your business dataset or click to browse.
           Aura AI will automatically detect KPIs, generate
           dashboards, charts, business insights and AI reports.
