@@ -3,8 +3,10 @@ import {
   Upload,
   Sparkles,
   FileText,
-  FolderKanban,
+  MessageSquareText,
   BarChart3,
+  FolderKanban,
+  UserCircle,
   Settings,
   type LucideIcon,
 } from "lucide-react";
@@ -27,9 +29,19 @@ export const menu: MenuItem[] = [
     icon: Upload,
   },
   {
-    title: "AI Analysis",
+    title: "AI Analyst",
     href: "/analysis",
     icon: Sparkles,
+  },
+  {
+    title: "AI Chat",
+    href: "/chat",
+    icon: MessageSquareText,
+  },
+  {
+    title: "Analytics",
+    href: "/analytics",
+    icon: BarChart3,
   },
   {
     title: "Reports",
@@ -42,9 +54,9 @@ export const menu: MenuItem[] = [
     icon: FolderKanban,
   },
   {
-    title: "Analytics",
-    href: "/analytics",
-    icon: BarChart3,
+    title: "Profile",
+    href: "/profile",
+    icon: UserCircle,
   },
   {
     title: "Settings",

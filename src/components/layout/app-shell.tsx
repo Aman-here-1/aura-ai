@@ -19,7 +19,7 @@ export default function AppShell({
         <Navbar />
 
         <main className="flex-1 overflow-y-auto">
-          <div className="mx-auto w-full max-w-[1700px] px-6 py-6 lg:px-8">
+          <div className="mx-auto w-full max-w-[1800px] py-6 px-8 2xl:px-10">
             {children}
           </div>
         </main>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Loader2, ArrowRight } from "lucide-react";
@@ -11,26 +11,43 @@ import FilePreview from "./file-preview";
 import { useDatasetStore } from "../../store/dataset-store";
 import { useAnalysisStore } from "../../store/analysis-store";
 import { generateAIReport } from "../../lib/api/ai";
+import DashboardLoadingSkeleton from "../dashboard/dashboard-loading-skeleton";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ??
-  "http://127.0.0.1:8000";
+  process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+
+const loadingMessages = [
+  "Uploading your dataset...",
+  "Reading your file...",
+  "Calculating KPIs...",
+  "Preparing charts...",
+  "Generating AI insights...",
+];
 
 export default function UploadPageContent() {
-  console.log("🔥 UPLOAD PAGE COMPONENT LOADED");
-
   const router = useRouter();
 
   const [file, setFile] = useState<File | null>(null);
 
-  const {
-    setDataset,
-    setLoading,
-    loading,
-    setError,
-  } = useDatasetStore();
+  // Local state: this controls the skeleton screen.
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [seconds, setSeconds] = useState(0);
 
+  const { setDataset, setLoading, setError } = useDatasetStore();
   const { setAnalysis } = useAnalysisStore();
+
+  useEffect(() => {
+    if (!isAnalyzing) {
+      setSeconds(0);
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setSeconds((current) => current + 1);
+    }, 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, [isAnalyzing]);
 
   const uploadFile = async () => {
     if (!file) {
@@ -38,16 +55,16 @@ export default function UploadPageContent() {
       return;
     }
 
-    try {
-      console.log("========== START ==========");
+    const startTime = Date.now();
 
+    try {
+      // Skeleton appears immediately.
+      setIsAnalyzing(true);
       setLoading(true);
       setError(null);
 
       const formData = new FormData();
       formData.append("file", file);
-
-      console.log("STEP 1 : Uploading dataset...");
 
       const { data } = await axios.post(
         `${API_BASE_URL}/api/upload`,
@@ -59,12 +76,7 @@ export default function UploadPageContent() {
         }
       );
 
-      console.log("STEP 2 : Upload Success");
-      console.log(data);
-
       setDataset(data);
-
-      console.log("STEP 3 : Calling AI Report API");
 
       let aiReport = null;
 
@@ -75,15 +87,9 @@ export default function UploadPageContent() {
           kpis: data.kpis ?? {},
           preview: data.preview ?? [],
         });
-
-        console.log("STEP 4 : AI Report Success");
-        console.log(aiReport);
       } catch (err) {
-        console.error("STEP 4 FAILED : AI Report Error");
-        console.error(err);
+        console.error("AI Report Error:", err);
       }
-
-      console.log("STEP 5 : Saving Analysis Store");
 
       setAnalysis({
         headers: data.headers ?? [],
@@ -91,34 +97,50 @@ export default function UploadPageContent() {
         intelligence: data.intelligence ?? {},
         kpis: data.kpis ?? {},
         charts: data.chart_data ?? {},
-        recommendedCharts:
-          data.recommended_charts ?? [],
+        recommendedCharts: data.recommended_charts ?? [],
         aiReport,
       });
 
-      console.log("STEP 6 : Redirecting to /analysis");
+      // Keeps skeleton visible briefly if API returns extremely fast.
+      const elapsed = Date.now() - startTime;
+      const minimumLoaderTime = 800;
+
+      if (elapsed < minimumLoaderTime) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, minimumLoaderTime - elapsed)
+        );
+      }
 
       router.push("/analysis");
-
-      console.log("========== END ==========");
     } catch (error: any) {
-      console.error("UPLOAD FAILED");
-      console.error(error);
+      console.error("Upload failed:", error);
 
       const message =
         error?.response?.data?.detail ??
-        "Failed to analyze dataset.";
+        "Failed to analyze dataset. Please try again.";
 
       setError(message);
-
       alert(message);
     } finally {
+      setIsAnalyzing(false);
       setLoading(false);
     }
   };
 
+  const currentMessage =
+    loadingMessages[
+      Math.min(Math.floor(seconds / 3), loadingMessages.length - 1)
+    ];
+
   return (
     <div className="space-y-8">
+{isAnalyzing && (
+  <DashboardLoadingSkeleton
+    message={currentMessage}
+    seconds={seconds}
+  />
+)}
+
       <UploadZone onFileSelect={setFile} />
 
       {file && (
@@ -133,27 +155,19 @@ export default function UploadPageContent() {
                 </h3>
 
                 <p className="mt-2 text-slate-500">
-                  Aura AI will generate KPIs,
-                  Smart Charts,
-                  AI Insights,
-                  Executive Summary,
-                  Recommendations,
-                  Risks,
-                  and a Complete Business Report.
+                  Aura AI will generate KPIs, charts, and insights.
                 </p>
               </div>
 
               <button
+                type="button"
                 onClick={uploadFile}
-                disabled={loading}
-                className="inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-70"
+                disabled={isAnalyzing}
+                className="inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-4 font-semibold text-white shadow-lg disabled:cursor-not-allowed disabled:opacity-70"
               >
-                {loading ? (
+                {isAnalyzing ? (
                   <>
-                    <Loader2
-                      size={20}
-                      className="animate-spin"
-                    />
+                    <Loader2 size={20} className="animate-spin" />
                     Analyzing Dataset...
                   </>
                 ) : (

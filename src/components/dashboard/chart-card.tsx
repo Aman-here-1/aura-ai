@@ -20,51 +20,75 @@ export default function ChartCard({
     <section
       className={`
         rounded-3xl
-        border border-slate-200
+        border
+        border-slate-200
         bg-white
         shadow-sm
         transition-all
         duration-300
-        hover:shadow-lg
+        hover:-translate-y-1
+        hover:shadow-xl
         ${className}
       `}
     >
       {/* Header */}
-      <div className="flex items-start justify-between border-b border-slate-100 px-6 py-5">
-        <div>
-          <h2 className="text-xl font-bold tracking-tight text-slate-900">
+
+      <div className="flex items-start justify-between border-b border-slate-100 px-8 py-7">
+
+        <div className="min-w-0">
+
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900">
+
             {title}
+
           </h2>
 
           {subtitle && (
-            <p className="mt-1 text-sm text-slate-500">
+
+            <p className="mt-2 text-base leading-6 text-slate-500">
+
               {subtitle}
+
             </p>
+
           )}
+
         </div>
 
         {action ? (
+
           action
+
         ) : (
+
           <button
             className="
-              rounded-xl
-              p-2
+              rounded-2xl
+              p-3
               text-slate-500
-              transition
+              transition-all
+              duration-300
               hover:bg-slate-100
               hover:text-slate-700
             "
           >
-            <MoreHorizontal size={18} />
+
+            <MoreHorizontal size={20} />
+
           </button>
+
         )}
+
       </div>
 
-      {/* Content */}
-      <div className="p-6">
+      {/* Body */}
+
+      <div className="p-8">
+
         {children}
+
       </div>
+
     </section>
   );
 }

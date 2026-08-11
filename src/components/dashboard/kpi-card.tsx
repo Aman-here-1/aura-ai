@@ -48,46 +48,50 @@ export default function KpiCard({
 
   return (
     <div
-      className={`group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${theme.border}`}
+      className={`group flex min-h-[220px] flex-col justify-between rounded-3xl border border-slate-200 bg-white p-8 shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${theme.border}`}
     >
+      {/* Top */}
       <div className="flex items-start justify-between">
         <div className="min-w-0">
-          <p className="text-sm font-medium text-slate-500">
+          <p className="text-base font-semibold text-slate-500">
             {title}
           </p>
 
-          <h2 className="mt-3 truncate text-3xl font-bold tracking-tight text-slate-900 xl:text-4xl">
+          <h2 className="mt-4 text-4xl font-bold leading-none tracking-tight text-slate-900 2xl:text-5xl">
             {value}
           </h2>
         </div>
 
         <div
-          className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${theme.bg} ring-8 ${theme.ring}`}
+          className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl ${theme.bg} ring-8 ${theme.ring}`}
         >
           <Icon
-            size={28}
+            size={30}
             className={theme.icon}
           />
         </div>
       </div>
 
-      <div className="mt-8 flex items-center justify-between border-t border-slate-100 pt-4">
-        <div className="flex items-center gap-2">
-          <div className="rounded-full bg-emerald-100 p-1">
-            <TrendingUp
-              size={14}
-              className="text-emerald-600"
-            />
+      {/* Bottom */}
+      <div className="mt-8 border-t border-slate-100 pt-5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="rounded-full bg-emerald-100 p-1">
+              <TrendingUp
+                size={14}
+                className="text-emerald-600"
+              />
+            </div>
+
+            <span className="text-sm font-semibold text-emerald-600">
+              {change}
+            </span>
           </div>
 
-          <span className="text-sm font-semibold text-emerald-600">
-            {change}
+          <span className="text-xs font-medium text-slate-400">
+            {subtitle}
           </span>
         </div>
-
-        <span className="text-xs font-medium text-slate-400">
-          {subtitle}
-        </span>
       </div>
     </div>
   );
