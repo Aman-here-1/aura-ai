@@ -26,101 +26,72 @@ export default function ReportsPage() {
   if (!report) {
     return (
       <AppShell>
-        <div className="flex min-h-[70vh] items-center justify-center py-6 lg:py-8">
-          <div className="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
-            <div className="flex w-full justify-center">
-              <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-blue-100">
-                <FileText size={38} className="text-blue-600" />
+        <main className="flex min-h-[calc(100dvh-120px)] items-center justify-center py-6 lg:py-8">
+          <section className="w-full max-w-lg rounded-3xl border border-slate-800 bg-[#111C31] p-8 text-center shadow-xl shadow-slate-950/20 sm:p-10">
+            <div className="flex justify-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-400/10 ring-1 ring-cyan-400/20">
+                <FileText size={30} className="text-cyan-300" />
               </div>
             </div>
 
-            <h2 className="mt-6 text-3xl font-bold text-slate-900">
-              No AI Report Available
+            <p className="mt-6 text-xs font-semibold uppercase tracking-[0.16em] text-cyan-400">
+              Reports workspace
+            </p>
+
+            <h2 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">
+              No AI report available
             </h2>
 
-            <p className="mt-3 leading-7 text-slate-500">
+            <p className="mt-3 leading-7 text-slate-400">
               Upload a dataset and generate an AI report to view executive
-              summaries, business insights, risks and recommendations.
+              summaries, business insights, risks, and recommendations.
             </p>
 
             <Link
               href="/upload"
-              className="mt-8 inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
+              className="mt-8 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 transition hover:from-cyan-400 hover:to-blue-500"
             >
-              <ArrowLeft size={18} />
-              Upload Dataset
+              <ArrowLeft size={17} />
+              Upload dataset
             </Link>
-          </div>
-        </div>
+          </section>
+        </main>
       </AppShell>
     );
   }
 
   return (
     <AppShell>
-      <div className="flex flex-col gap-8 py-6 lg:gap-10 lg:py-8">
-        <section>
-          <h1 className="text-4xl font-bold text-slate-900">
-            AI Business Report
+      <main className="space-y-8 py-6 lg:space-y-10 lg:py-8">
+        <section className="rounded-3xl border border-slate-800 bg-gradient-to-r from-[#111C31] via-[#101B30] to-cyan-400/10 px-6 py-7 shadow-xl shadow-slate-950/10 sm:px-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-400">
+            Aura AI intelligence
+          </p>
+
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            AI business report
           </h1>
 
-          <p className="mt-4 text-slate-500">
-            Executive summary and AI-generated business insights.
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
+            Executive summary, performance signals, risks, and recommended
+            actions generated from your current dataset.
           </p>
         </section>
 
-        <section>
-          <ExecutiveSummary summary={report.summary} />
-        </section>
-
-        <section>
-          <ForecastCard forecast={report.forecast} />
-        </section>
-
-        <section>
-          <TrendCard trend={report.trend} />
-        </section>
-
-        <section>
-          <DataQualityCard dataQuality={report.data_quality} />
-        </section>
-
-        <section>
-          <CorrelationCard correlation={report.correlation} />
-        </section>
-
-        <section>
-          <RootCauseCard rootCauses={report.root_causes} />
-        </section>
-
-        <section>
-          <BusinessRulesCard rules={report.business_rules} />
-        </section>
-
-        <section>
-          <StatisticsCard statistics={report.statistics} />
-        </section>
-
-        <section>
-          <SeasonalityCard seasonality={report.seasonality} />
-        </section>
-
-        <section>
-          <ExplainabilityCard explainability={report.explainability} />
-        </section>
-
-        <section>
-          <NarrativeCard narrative={report.narrative} />
-        </section>
-
-        <section>
-          <BusinessInsights insights={report.insights} />
-        </section>
-
-        <section>
-          <Recommendations recommendations={report.recommendations} />
-        </section>
-      </div>
+        <ExecutiveSummary summary={report.summary} />
+        <ForecastCard forecast={report.forecast} />
+        <TrendCard trend={report.trend} />
+        <DataQualityCard dataQuality={report.data_quality} />
+        <CorrelationCard correlation={report.correlation} />
+        <RootCauseCard rootCauses={report.root_causes} />
+        <BusinessRulesCard rules={report.business_rules} />
+        <StatisticsCard statistics={report.statistics} />
+        <SeasonalityCard seasonality={report.seasonality} />
+        <ExplainabilityCard explainability={report.explainability} />
+        <NarrativeCard narrative={report.narrative} />
+        <BusinessInsights insights={report.insights} />
+        <Recommendations recommendations={report.recommendations} />
+      </main>
     </AppShell>
   );
 }

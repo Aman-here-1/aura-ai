@@ -1,148 +1,128 @@
 "use client";
 
 import {
-  TrendingUp,
-  TrendingDown,
+  ArrowRight,
   Minus,
+  TrendingDown,
+  TrendingUp,
 } from "lucide-react";
 
 interface Props {
   trend: Record<string, unknown>;
 }
 
-export default function TrendCard({
-  trend,
-}: Props) {
+function formatCurrency(value: number) {
+  return `₹${value.toLocaleString("en-IN")}`;
+}
 
-  const trendName =
-    String(
-      trend?.trend ?? "Unknown"
-    );
-
-  const growth =
-    Number(
-      trend?.growth ?? 0
-    );
-
-  const start =
-    Number(
-      trend?.start_value ?? 0
-    );
-
-  const end =
-    Number(
-      trend?.end_value ?? 0
-    );
-
-  const message =
-    String(
-      trend?.message ?? ""
-    );
+export default function TrendCard({ trend }: Props) {
+  const trendName = String(trend?.trend ?? "Unknown");
+  const growth = Number(trend?.growth ?? 0);
+  const start = Number(trend?.start_value ?? 0);
+  const end = Number(trend?.end_value ?? 0);
+  const message = String(trend?.message ?? "");
 
   const positive = growth > 0;
-
   const negative = growth < 0;
 
+  const TrendIcon = positive
+    ? TrendingUp
+    : negative
+      ? TrendingDown
+      : Minus;
+
+  const accentColor = positive
+    ? "text-emerald-300"
+    : negative
+      ? "text-rose-300"
+      : "text-slate-300";
+
+  const accentBackground = positive
+    ? "bg-emerald-400/10"
+    : negative
+      ? "bg-rose-400/10"
+      : "bg-slate-800";
+
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white shadow-sm">
+    <section className="overflow-hidden rounded-2xl border border-slate-800 bg-[#111C31] shadow-sm">
+      <header className="border-b border-slate-800 px-5 py-5 sm:px-6">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-400">
+          Performance movement
+        </p>
 
-      <div className="border-b border-slate-100 px-6 py-5">
-
-        <h2 className="text-2xl font-bold text-slate-900">
-          Trend Analysis
+        <h2 className="mt-1 text-xl font-semibold text-white">
+          Trend analysis
         </h2>
 
         <p className="mt-1 text-sm text-slate-500">
-          Growth trend detected from uploaded data.
+          Growth trend detected from the uploaded data.
         </p>
+      </header>
 
-      </div>
-
-      <div className="grid gap-5 p-6 md:grid-cols-3">
-
-        <div className="rounded-2xl bg-blue-50 p-5">
-
-          <p className="text-sm text-slate-500">
-            Trend
+      <div className="grid gap-3 p-5 md:grid-cols-3 sm:p-6">
+        <article className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+            Detected trend
           </p>
 
-          <div className="mt-4 flex items-center gap-3">
+          <div className="mt-5 flex items-center gap-3">
+            <div
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${accentBackground}`}
+            >
+              <TrendIcon size={21} className={accentColor} />
+            </div>
 
-            {positive ? (
-              <TrendingUp
-                size={26}
-                className="text-emerald-600"
-              />
-            ) : negative ? (
-              <TrendingDown
-                size={26}
-                className="text-red-600"
-              />
-            ) : (
-              <Minus
-                size={26}
-                className="text-slate-500"
-              />
-            )}
-
-            <h3 className="text-2xl font-bold">
+            <p className={`truncate text-2xl font-bold capitalize ${accentColor}`}>
               {trendName}
-            </h3>
-
+            </p>
           </div>
+        </article>
 
-        </div>
-
-        <div className="rounded-2xl bg-emerald-50 p-5">
-
-          <p className="text-sm text-slate-500">
-            Growth
+        <article className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+            Growth rate
           </p>
 
-          <h3
-            className={`mt-4 text-3xl font-bold ${
-              positive
-                ? "text-emerald-600"
-                : negative
-                ? "text-red-600"
-                : "text-slate-700"
-            }`}
-          >
-            {growth}%
-          </h3>
-
-        </div>
-
-        <div className="rounded-2xl bg-violet-50 p-5">
-
-          <p className="text-sm text-slate-500">
-            Revenue Change
+          <p className={`mt-5 text-3xl font-bold ${accentColor}`}>
+            {positive ? "+" : ""}
+            {growth.toFixed(2)}%
           </p>
 
-          <h3 className="mt-4 text-xl font-bold text-slate-900">
-            ₹{start.toLocaleString("en-IN")}
-          </h3>
+          <p className="mt-2 text-xs text-slate-500">
+            Change across the analysed period
+          </p>
+        </article>
 
-          <p className="mt-2 text-center text-slate-400">
-            ↓
+        <article className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+            Revenue movement
           </p>
 
-          <h3 className="mt-2 text-xl font-bold text-slate-900">
-            ₹{end.toLocaleString("en-IN")}
-          </h3>
+          <div className="mt-4 flex items-center gap-2">
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] text-slate-500">Start</p>
+              <p className="mt-1 truncate text-base font-semibold text-slate-100">
+                {formatCurrency(start)}
+              </p>
+            </div>
 
-        </div>
+            <ArrowRight size={17} className="shrink-0 text-slate-600" />
 
+            <div className="min-w-0 flex-1 text-right">
+              <p className="text-[11px] text-slate-500">End</p>
+              <p className="mt-1 truncate text-base font-semibold text-slate-100">
+                {formatCurrency(end)}
+              </p>
+            </div>
+          </div>
+        </article>
       </div>
 
-      <div className="border-t border-slate-100 bg-slate-50 px-6 py-5">
-
-        <p className="text-slate-600">
-          {message}
-        </p>
-
-      </div>
-
+      {message && (
+        <footer className="border-t border-slate-800 bg-slate-900/40 px-5 py-4 sm:px-6">
+          <p className="text-sm leading-6 text-slate-400">{message}</p>
+        </footer>
+      )}
     </section>
   );
 }

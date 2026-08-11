@@ -1,259 +1,144 @@
 "use client";
 
 import {
-  TrendingUp,
-  TrendingDown,
+  BarChart3,
   Minus,
+  TrendingDown,
+  TrendingUp,
 } from "lucide-react";
 
 interface BusinessMetric {
-
   title: string;
-
   value: number;
-
   formatted_value: string;
-
   unit: string;
-
   trend: string;
-
   description: string;
-
 }
 
 interface BusinessMetrics {
-
   metrics: BusinessMetric[];
-
 }
 
 interface Props {
-
   metrics: BusinessMetrics;
-
 }
 
-export default function BusinessMetricsCard({
+type TrendPresentation = {
+  icon: typeof TrendingUp;
+  iconColor: string;
+  badgeColor: string;
+  label: string;
+};
 
-  metrics,
+function getTrendPresentation(trend: string): TrendPresentation {
+  const normalizedTrend = trend.toLowerCase().trim();
 
-}: Props) {
+  switch (normalizedTrend) {
+    case "up":
+    case "increase":
+    case "positive":
+    case "growth":
+      return {
+        icon: TrendingUp,
+        iconColor: "text-emerald-400",
+        badgeColor:
+          "border border-emerald-400/20 bg-emerald-400/10 text-emerald-300",
+        label: trend,
+      };
 
-  if (
+    case "down":
+    case "decrease":
+    case "negative":
+    case "decline":
+      return {
+        icon: TrendingDown,
+        iconColor: "text-rose-400",
+        badgeColor:
+          "border border-rose-400/20 bg-rose-400/10 text-rose-300",
+        label: trend,
+      };
 
-    !metrics ||
+    default:
+      return {
+        icon: Minus,
+        iconColor: "text-slate-400",
+        badgeColor: "border border-slate-700 bg-slate-800 text-slate-300",
+        label: trend || "No change",
+      };
+  }
+}
 
-    !metrics.metrics ||
-
-    metrics.metrics.length === 0
-
-  ) {
-
+export default function BusinessMetricsCard({ metrics }: Props) {
+  if (!metrics || !metrics.metrics || metrics.metrics.length === 0) {
     return null;
-
   }
 
-  const trendIcon = (
-
-    trend: string,
-
-  ) => {
-
-    switch (
-
-      trend.toLowerCase()
-
-    ) {
-
-      case "up":
-
-      case "increase":
-
-      case "positive":
-
-        return (
-
-          <TrendingUp
-
-            size={18}
-
-            className="text-emerald-600"
-
-          />
-
-        );
-
-      case "down":
-
-      case "decrease":
-
-      case "negative":
-
-        return (
-
-          <TrendingDown
-
-            size={18}
-
-            className="text-red-600"
-
-          />
-
-        );
-
-      default:
-
-        return (
-
-          <Minus
-
-            size={18}
-
-            className="text-slate-500"
-
-          />
-
-        );
-
-    }
-
-  };
-
-  const trendColor = (
-
-    trend: string,
-
-  ) => {
-
-    switch (
-
-      trend.toLowerCase()
-
-    ) {
-
-      case "up":
-
-      case "increase":
-
-      case "positive":
-
-        return "text-emerald-600";
-
-      case "down":
-
-      case "decrease":
-
-      case "negative":
-
-        return "text-red-600";
-
-      default:
-
-        return "text-slate-500";
-
-    }
-
-  };
-
   return (
+    <section className="rounded-2xl border border-slate-800 bg-[#111C31] p-5 shadow-sm sm:p-6">
+      <header className="mb-5 flex items-start gap-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-cyan-400/10">
+          <BarChart3 size={19} className="text-cyan-300" />
+        </div>
 
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div>
+          <h2 className="text-base font-semibold text-white">
+            Business metrics
+          </h2>
 
-      <div className="mb-6">
+          <p className="mt-1 text-sm leading-6 text-slate-500">
+            Key performance indicators generated from this analysis.
+          </p>
+        </div>
+      </header>
 
-        <h2 className="text-xl font-bold text-slate-900">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {metrics.metrics.map((metric, index) => {
+          const trend = getTrendPresentation(metric.trend);
+          const TrendIcon = trend.icon;
 
-          📊 Business Metrics
-
-        </h2>
-
-        <p className="mt-1 text-sm text-slate-500">
-
-          Key performance indicators generated from your analysis.
-
-        </p>
-
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-
-        {metrics.metrics.map(
-
-          (
-
-            metric,
-
-            index,
-
-          ) => (
-
-            <div
-
-              key={index}
-
-              className="rounded-xl border border-slate-200 bg-slate-50 p-5 transition hover:shadow-md"
-
+          return (
+            <article
+              key={`${metric.title}-${index}`}
+              className="group rounded-2xl border border-slate-800 bg-slate-900/60 p-4 transition duration-200 hover:-translate-y-0.5 hover:border-slate-700 hover:bg-slate-900"
             >
-
-              <div className="flex items-center justify-between">
-
-                <div className="text-sm font-medium text-slate-500">
-
+              <div className="flex items-start justify-between gap-3">
+                <p className="min-w-0 text-xs font-medium uppercase tracking-wide text-slate-500">
                   {metric.title}
+                </p>
 
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-800">
+                  <TrendIcon size={17} className={trend.iconColor} />
                 </div>
+              </div>
 
-                {trendIcon(
+              <div className="mt-4 flex items-end gap-2">
+                <p className="truncate text-2xl font-bold tracking-tight text-white">
+                  {metric.formatted_value}
+                </p>
 
-                  metric.trend,
-
+                {metric.unit && (
+                  <span className="mb-1 truncate text-xs text-slate-500">
+                    {metric.unit}
+                  </span>
                 )}
-
               </div>
 
-              <div className="mt-3 text-3xl font-bold text-slate-900">
-
-                {
-
-                  metric.formatted_value
-
-                }
-
+              <div className="mt-3">
+                <span
+                  className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold capitalize ${trend.badgeColor}`}
+                >
+                  {trend.label}
+                </span>
               </div>
 
-              <div
-
-                className={`mt-2 flex items-center gap-2 text-sm font-medium ${trendColor(
-                  metric.trend,
-                )}`}
-
-              >
-
-                {metric.trend}
-
-              </div>
-
-              <div className="mt-4 text-sm leading-6 text-slate-600">
-
-                {
-
-                  metric.description
-
-                }
-
-              </div>
-
-            </div>
-
-          ),
-
-        )}
-
+              <p className="mt-4 border-t border-slate-800 pt-3 text-sm leading-6 text-slate-400">
+                {metric.description}
+              </p>
+            </article>
+          );
+        })}
       </div>
-
-    </div>
-
+    </section>
   );
-
 }

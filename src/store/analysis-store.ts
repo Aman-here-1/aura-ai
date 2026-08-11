@@ -51,13 +51,9 @@ export const useAnalysisStore = create<AnalysisState>()(
   persist(
     (set) => ({
       analysis: null,
-
       report: null,
-
       loading: false,
-
       error: null,
-
       hasAnalysis: false,
 
       setAnalysis: (data) =>
@@ -70,16 +66,28 @@ export const useAnalysisStore = create<AnalysisState>()(
         }),
 
       setReport: (report) =>
-        set({
+        set((state) => ({
           report,
+          analysis: state.analysis
+            ? {
+                ...state.analysis,
+                aiReport: report,
+              }
+            : null,
           loading: false,
           error: null,
-        }),
+        })),
 
       clearReport: () =>
-        set({
+        set((state) => ({
           report: null,
-        }),
+          analysis: state.analysis
+            ? {
+                ...state.analysis,
+                aiReport: null,
+              }
+            : null,
+        })),
 
       setLoading: (loading) =>
         set({
@@ -103,6 +111,14 @@ export const useAnalysisStore = create<AnalysisState>()(
     }),
     {
       name: "aura-analysis-store",
-    }
-  )
+
+      // Persist business data only. Temporary loading/error UI state should
+      // never reappear after a page refresh.
+      partialize: (state) => ({
+        analysis: state.analysis,
+        report: state.report,
+        hasAnalysis: state.hasAnalysis,
+      }),
+    },
+  ),
 );

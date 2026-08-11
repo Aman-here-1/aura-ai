@@ -2,238 +2,161 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-import {
-  Database,
-  Sparkles,
-  LogOut,
-} from "lucide-react";
+import { Database, LogOut, Sparkles } from "lucide-react";
 
 import { menu } from "./menu";
-
 import { useDatasetStore } from "../../store/dataset-store";
-
-import {
-  getCurrentUser,
-  logout,
-} from "../../services/auth";
+import { getCurrentUser, logout } from "../../services/auth";
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   const { dataset } = useDatasetStore();
-
   const user = getCurrentUser();
 
   const initials =
     user?.full_name
       ?.split(" ")
-      .map((x) => x[0])
+      .map((name) => name[0])
       .join("")
       .substring(0, 2)
       .toUpperCase() ?? "AU";
 
   return (
-    <aside className="sticky top-0 flex h-screen w-72 shrink-0 flex-col border-r border-slate-200 bg-white">
-
-      {/* ------------------------------------------------ */}
-      {/* Logo */}
-      {/* ------------------------------------------------ */}
-
-      <div className="border-b border-slate-200 px-6 py-6">
-
-        <Link
-          href="/"
-          className="flex items-center gap-4"
-        >
-
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-2xl font-bold text-white shadow-lg">
+    <aside className="sticky top-0 hidden h-[100dvh] w-72 shrink-0 flex-col border-r border-slate-800 bg-[#0B1120] lg:flex">
+      <div className="border-b border-slate-800 px-5 py-5">
+        <Link href="/" className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 via-blue-500 to-violet-600 text-lg font-bold text-white shadow-lg shadow-blue-950/40">
             A
           </div>
 
           <div>
-
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+            <h1 className="text-lg font-bold tracking-tight text-white">
               Aura AI
             </h1>
-
-            <p className="text-sm text-slate-500">
-              AI Business Analyst
-            </p>
-
+            <p className="text-xs text-slate-500">Business intelligence</p>
           </div>
-
         </Link>
-
       </div>
 
-      {/* ------------------------------------------------ */}
-      {/* User */}
-      {/* ------------------------------------------------ */}
-
-      <div className="border-b border-slate-100 px-5 py-5">
-
-        <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-lg font-bold text-white">
+      <div className="border-b border-slate-800 px-4 py-4">
+        <div className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 text-xs font-bold text-white">
             {initials}
           </div>
 
-          <div className="min-w-0 flex-1">
-
-            <p className="truncate font-semibold text-slate-900">
-              {user?.full_name ?? "Guest User"}
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-slate-100">
+              {user?.full_name ?? "Guest user"}
             </p>
-
             <p className="truncate text-xs text-slate-500">
-              {user?.email ?? "guest@aura.ai"}
+              {user?.email ?? " "}
             </p>
-
           </div>
-
         </div>
-
       </div>
 
-      {/* ------------------------------------------------ */}
-      {/* Dataset */}
-      {/* ------------------------------------------------ */}
-
-      <div className="px-5 pt-5">
-
+      <div className="px-4 pt-4">
         <div
-          className={`rounded-2xl border p-4 transition ${
+          className={`rounded-xl border p-3.5 ${
             dataset
-              ? "border-emerald-200 bg-emerald-50"
-              : "border-slate-200 bg-slate-50"
+              ? "border-emerald-400/20 bg-emerald-400/5"
+              : "border-slate-800 bg-slate-900/50"
           }`}
         >
-
           <div className="flex items-center gap-3">
-
             <div
-              className={`flex h-10 w-10 items-center justify-center rounded-xl ${
-                dataset
-                  ? "bg-emerald-100"
-                  : "bg-slate-200"
+              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+                dataset ? "bg-emerald-400/10" : "bg-slate-800"
               }`}
             >
-
               <Database
-                size={20}
-                className={
-                  dataset
-                    ? "text-emerald-600"
-                    : "text-slate-500"
-                }
+                size={17}
+                className={dataset ? "text-emerald-300" : "text-slate-500"}
               />
-
             </div>
 
-            <div>
-
-              <p className="text-sm font-semibold text-slate-900">
-                {dataset
-                  ? "Dataset Loaded"
-                  : "No Dataset"}
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-slate-200">
+                {dataset ? "Dataset loaded" : "No dataset"}
               </p>
-
-              <p className="text-xs text-slate-500">
+              <p className="mt-0.5 truncate text-xs text-slate-500">
                 {dataset
-                  ? `${dataset.rows.toLocaleString()} rows • ${dataset.columns} columns`
+                  ? `${dataset.rows.toLocaleString()} rows · ${dataset.columns} columns`
                   : "Upload Excel or CSV"}
               </p>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
 
-      {/* ------------------------------------------------ */}
-      {/* Navigation */}
-      {/* ------------------------------------------------ */}
+      <nav className="flex-1 overflow-y-auto px-3 py-5">
+        <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-600">
+          Workspace
+        </p>
 
-      <nav className="flex-1 overflow-y-auto px-4 py-6">
-
-        <div className="space-y-2">
-
+        <div className="space-y-1">
           {menu.map((item) => {
             const Icon = item.icon;
-
-            const active =
-              pathname === item.href;
+            const active = pathname === item.href;
 
             return (
               <Link
                 key={item.title}
                 href={item.href}
-                className={`group flex items-center gap-4 rounded-2xl px-4 py-3.5 text-sm font-semibold transition-all duration-300 ${
+                aria-current={active ? "page" : undefined}
+                className={`group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition ${
                   active
-                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                    ? "bg-gradient-to-r from-cyan-400/15 to-blue-500/15 text-white ring-1 ring-cyan-400/15"
+                    : "text-slate-400 hover:bg-slate-900 hover:text-slate-100"
                 }`}
               >
-
                 <Icon
-                  size={20}
+                  size={18}
                   className={
                     active
-                      ? "text-white"
-                      : "text-slate-500 group-hover:text-blue-600"
+                      ? "text-cyan-300"
+                      : "text-slate-500 transition group-hover:text-slate-300"
                   }
                 />
 
                 <span>{item.title}</span>
 
+                {active && (
+                  <span className="ml-auto h-1.5 w-1.5 rounded-full bg-cyan-300" />
+                )}
               </Link>
             );
           })}
-
         </div>
-
       </nav>
 
-      {/* ------------------------------------------------ */}
-      {/* Footer */}
-      {/* ------------------------------------------------ */}
-
-      <div className="border-t border-slate-200 p-5">
-
-        <div className="rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 p-5 text-white shadow-xl">
-
-          <div className="flex items-center justify-between">
-
+      <div className="border-t border-slate-800 p-4">
+        <div className="rounded-xl border border-cyan-400/15 bg-gradient-to-br from-cyan-400/10 to-blue-500/10 p-4">
+          <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-
-              <Sparkles size={18} />
-
-              <span className="font-semibold">
-                Aura AI v1.0
+              <Sparkles size={16} className="text-cyan-300" />
+              <span className="text-sm font-semibold text-slate-100">
+                Aura AI
               </span>
-
             </div>
 
             <button
+              type="button"
               onClick={logout}
-              className="rounded-xl p-2 transition hover:bg-white/20"
+              className="rounded-lg p-1.5 text-slate-400 transition hover:bg-rose-400/10 hover:text-rose-300 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+              title="Logout"
+              aria-label="Logout"
             >
-              <LogOut size={18} />
+              <LogOut size={16} />
             </button>
-
           </div>
 
-          <p className="mt-4 text-sm leading-6 text-blue-100">
-            AI-powered dashboards, business analytics,
-            reports and conversational insights.
+          <p className="mt-3 text-xs leading-5 text-slate-500">
+            AI-powered business analysis for faster decisions.
           </p>
-
         </div>
-
       </div>
-
     </aside>
   );
 }

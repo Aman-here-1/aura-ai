@@ -1,22 +1,22 @@
 @import "tailwindcss";
-
+@plugin "@tailwindcss/typography";
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #070b14;
+  --foreground: #e2e8f0;
 
-  --card: #ffffff;
-  --card-foreground: #0f172a;
+  --card: #111c31;
+  --card-foreground: #f8fafc;
 
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
+  --primary: #22d3ee;
+  --primary-foreground: #07111d;
 
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
+  --secondary: #0f172a;
+  --secondary-foreground: #e2e8f0;
 
   --muted: #64748b;
-  --muted-foreground: #64748b;
+  --muted-foreground: #94a3b8;
 
-  --border: #e2e8f0;
+  --border: #1e293b;
 
   --radius: 16px;
 }
@@ -32,7 +32,9 @@
 }
 
 html {
+  min-width: 320px;
   scroll-behavior: smooth;
+  color-scheme: dark;
 }
 
 html,
@@ -42,7 +44,14 @@ body {
 }
 
 body {
-  background: var(--background);
+  overflow-x: hidden;
+  background:
+    radial-gradient(
+      circle at 50% -20%,
+      rgba(34, 211, 238, 0.08),
+      transparent 38%
+    ),
+    var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   text-rendering: optimizeLegibility;
@@ -57,8 +66,12 @@ select {
   font: inherit;
 }
 
-button {
+button:not(:disabled) {
   cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
 }
 
 a {
@@ -74,32 +87,63 @@ canvas {
   max-width: 100%;
 }
 
+textarea {
+  field-sizing: content;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #0b1120;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  border: 2px solid #0b1120;
   border-radius: 999px;
+  background: #334155;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #475569;
 }
 
 ::selection {
-  background: #2563eb;
-  color: white;
+  background: rgba(34, 211, 238, 0.25);
+  color: #f8fafc;
 }
 
 .container {
   width: 100%;
   max-width: 1600px;
   margin-inline: auto;
-  padding-inline: 2rem;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-inline: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
