@@ -147,3 +147,200 @@ textarea {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* =========================================================
+   AURA AI THEME SYSTEM
+   Default = DARK
+   .light = LIGHT
+========================================================= */
+
+html {
+  color-scheme: dark;
+  transition:
+    background-color 300ms ease,
+    color 300ms ease;
+}
+
+html.light {
+  color-scheme: light;
+}
+
+/* ---------------------------------------------------------
+   BODY
+--------------------------------------------------------- */
+
+html.light body {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* ---------------------------------------------------------
+   MAIN APP BACKGROUND
+--------------------------------------------------------- */
+
+html.light .bg-\[\#070B14\] {
+  background: #f8fafc !important;
+}
+
+html.light .bg-\[\#0B1120\] {
+  background: #ffffff !important;
+}
+
+/* ---------------------------------------------------------
+   DARK NAVBAR / SIDEBAR BORDERS
+--------------------------------------------------------- */
+
+html.light .border-slate-800 {
+  border-color: #e2e8f0 !important;
+}
+
+/* ---------------------------------------------------------
+   DARK TEXT
+--------------------------------------------------------- */
+
+html.light .text-white {
+  color: #0f172a !important;
+}
+
+html.light .text-slate-100 {
+  color: #1e293b !important;
+}
+
+html.light .text-slate-200 {
+  color: #334155 !important;
+}
+
+html.light .text-slate-300 {
+  color: #475569 !important;
+}
+
+html.light .text-slate-400 {
+  color: #64748b !important;
+}
+
+html.light .text-slate-500 {
+  color: #64748b !important;
+}
+
+html.light .text-slate-600 {
+  color: #475569 !important;
+}
+
+/* ---------------------------------------------------------
+   SIDEBAR
+--------------------------------------------------------- */
+
+html.light aside {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light aside .bg-slate-900\/60 {
+  background: #f8fafc !important;
+}
+
+html.light aside .bg-slate-900\/50 {
+  background: #f8fafc !important;
+}
+
+html.light aside .hover\:bg-slate-900:hover {
+  background: #f1f5f9 !important;
+}
+
+/* ---------------------------------------------------------
+   NAVBAR
+--------------------------------------------------------- */
+
+html.light header {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* ---------------------------------------------------------
+   SEARCH / INPUTS
+--------------------------------------------------------- */
+
+html.light input,
+html.light textarea,
+html.light select {
+  background-color: #ffffff;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94a3b8;
+}
+
+/* ---------------------------------------------------------
+   DARK CARDS
+--------------------------------------------------------- */
+
+html.light .bg-slate-900 {
+  background: #ffffff !important;
+}
+
+html.light .bg-slate-950 {
+  background: #f8fafc !important;
+}
+
+/* ---------------------------------------------------------
+   DARK GRADIENT CONTAINERS
+   Keep Aura's identity but make them lighter.
+--------------------------------------------------------- */
+
+html.light .from-\[\#111C31\] {
+  --tw-gradient-from: #ffffff !important;
+}
+
+html.light .via-\[\#101B30\] {
+  --tw-gradient-via: #f8fafc !important;
+}
+
+html.light .to-cyan-400\/10 {
+  --tw-gradient-to: rgb(34 211 238 / 0.08) !important;
+}
+
+/* ---------------------------------------------------------
+   DARK BORDERS
+--------------------------------------------------------- */
+
+html.light .border-slate-700 {
+  border-color: #cbd5e1 !important;
+}
+
+html.light .border-slate-800 {
+  border-color: #e2e8f0 !important;
+}
+
+/* ---------------------------------------------------------
+   DARK SHADOWS
+--------------------------------------------------------- */
+
+html.light .shadow-slate-950\/10 {
+  --tw-shadow-color: rgb(15 23 42 / 0.08) !important;
+}
+
+html.light .shadow-slate-950\/20 {
+  --tw-shadow-color: rgb(15 23 42 / 0.08) !important;
+}
+
+/* ---------------------------------------------------------
+   SMOOTH THEME TRANSITION
+--------------------------------------------------------- */
+
+body,
+aside,
+header,
+section,
+button,
+input,
+textarea,
+select {
+  transition:
+    background-color 250ms ease,
+    border-color 250ms ease,
+    color 250ms ease,
+    box-shadow 250ms ease;
+}

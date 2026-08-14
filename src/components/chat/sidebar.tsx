@@ -1,418 +1,680 @@
 "use client";
 
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
 import {
-  Check,
-  Clock3,
-  MessageSquarePlus,
-  MoreHorizontal,
-  Pencil,
+  Database,
+  LogOut,
   Sparkles,
-  Trash2,
-  X,
+  MessageSquare,
 } from "lucide-react";
-import { useMemo, useState } from "react";
 
-import { useChatSessionStore } from "@/src/hooks/chat-session-store";
-import { useChatStore } from "../../store/chat-store";
-
-const formatRelativeTime = (dateString: string) => {
-  const date = new Date(dateString);
-  const now = new Date();
-
-  const diffMs = now.getTime() - date.getTime();
-  const diffMinutes = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMs / 3600000);
-  const diffDays = Math.floor(diffMs / 86400000);
-
-  if (diffMinutes < 1) return "Just now";
-  if (diffMinutes < 60) return `${diffMinutes}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays === 1) return "Yesterday";
-  if (diffDays < 7) return `${diffDays}d ago`;
-
-  return date.toLocaleDateString(undefined, {
-    day: "numeric",
-    month: "short",
-  });
-};
-
-const getPreview = (
-  messages: ReturnType<
-    typeof useChatStore.getState
-  >["messagesBySession"][string],
-) => {
-  if (!messages?.length) {
-    return "Start a new business analysis";
-  }
-
-  const lastUserMessage = [...messages]
-    .reverse()
-    .find((message) => message.role === "user");
-
-  if (lastUserMessage?.content) {
-    return lastUserMessage.content;
-  }
-
-  return "AI business analysis";
-};
+import { menu } from "../layout/menu";
+import { useDatasetStore } from "../../store/dataset-store";
+import { getCurrentUser, logout } from "../../services/auth";
 
 export default function Sidebar() {
-  const {
-    sessions,
-    current,
-    createSession,
-    setCurrent,
-    renameSession,
-    deleteSession,
-  } = useChatSessionStore();
+  const pathname = usePathname();
 
-  const messagesBySession = useChatStore(
-    (state) => state.messagesBySession,
-  );
+  const [collapsed, setCollapsed] = useState(false);
 
-  const deleteChat = useChatStore((state) => state.deleteChat);
+  const { dataset } = useDatasetStore();
+  const user = getCurrentUser();
 
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editingTitle, setEditingTitle] = useState("");
-
-  const [menuId, setMenuId] = useState<string | null>(null);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
-
-  const sortedSessions = useMemo(() => {
-    return [...sessions].sort(
-      (a, b) =>
-        new Date(b.updatedAt).getTime() -
-        new Date(a.updatedAt).getTime(),
-    );
-  }, [sessions]);
-
-  const handleNewChat = () => {
-    createSession("New analysis");
-    setMenuId(null);
-  };
-
-  const startRename = (
-    id: string,
-    title: string,
-  ) => {
-    setEditingId(id);
-    setEditingTitle(title);
-    setMenuId(null);
-  };
-
-  const saveRename = (id: string) => {
-    const title = editingTitle.trim();
-
-    if (title) {
-      renameSession(id, title);
-    }
-
-    setEditingId(null);
-    setEditingTitle("");
-  };
-
-  const cancelRename = () => {
-    setEditingId(null);
-    setEditingTitle("");
-  };
-
-  const handleDelete = (id: string) => {
-    deleteChat(id);
-    deleteSession(id);
-
-    setDeleteId(null);
-    setMenuId(null);
-  };
-
-  const handleSelect = (id: string) => {
-    setCurrent(id);
-    setMenuId(null);
-  };
+  const initials =
+    user?.full_name
+      ?.split(" ")
+      .map((name) => name[0])
+      .join("")
+      .substring(0, 2)
+      .toUpperCase() ?? "AU";
 
   return (
-    <>
-      <aside className="hidden w-80 shrink-0 flex-col border-r border-slate-800/80 bg-[#0B1120] md:flex">
-        {/* Header */}
-        <div className="border-b border-slate-800/80 p-5">
-          <div className="mb-5 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600 shadow-lg shadow-blue-950/50">
-                <Sparkles
-                  size={18}
-                  className="text-white"
-                />
-              </div>
+    <aside
+      className={`
+        sticky
+        top-0
+        hidden
+        h-[100dvh]
+        shrink-0
+        flex-col
+        border-r
+        border-slate-800
+        bg-[#0B1120]
+        transition-all
+        duration-300
+        ease-in-out
 
-              <div>
-                <p className="text-sm font-semibold tracking-tight text-white">
-                  Aura AI
-                </p>
+        lg:flex
 
-                <p className="text-[11px] text-slate-500">
-                  Business Analyst
-                </p>
-              </div>
-            </div>
+        light:border-slate-200
+        light:bg-white
 
-            <div className="flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]" />
-          </div>
+        ${collapsed ? "w-20" : "w-72"}
+      `}
+    >
+      {/* =====================================================
+          LOGO / BRAND
+      ====================================================== */}
 
-          <button
-            type="button"
-            onClick={handleNewChat}
-            className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 transition-all duration-200 hover:-translate-y-0.5 hover:from-cyan-400 hover:to-blue-500 hover:shadow-cyan-950/40 focus:outline-none focus:ring-2 focus:ring-cyan-400/60"
+      <div
+        className={`
+          border-b
+          border-slate-800
+          py-5
+          transition-all
+          duration-300
+
+          light:border-slate-200
+
+          ${collapsed ? "px-3" : "px-5"}
+        `}
+      >
+        <Link
+          href="/"
+          className={`
+            flex
+            items-center
+            transition-all
+            duration-300
+
+            ${collapsed ? "justify-center" : "gap-3"}
+          `}
+        >
+          {/* Logo */}
+
+          <div
+            className="
+              flex
+              h-11
+              w-11
+              shrink-0
+              items-center
+              justify-center
+              rounded-xl
+              bg-gradient-to-br
+              from-cyan-400
+              via-blue-500
+              to-violet-600
+              text-lg
+              font-bold
+              text-white
+              shadow-lg
+              shadow-blue-950/40
+            "
           >
-            <MessageSquarePlus
-              size={17}
-              className="transition-transform group-hover:scale-110"
-            />
-
-            New analysis
-          </button>
-        </div>
-
-        {/* Conversations */}
-        <div className="min-h-0 flex-1 overflow-y-auto px-3 py-5">
-          <div className="mb-3 flex items-center justify-between px-2">
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">
-              Recent conversations
-            </p>
-
-            {sessions.length > 0 && (
-              <span className="rounded-full border border-slate-800 bg-slate-900 px-2 py-0.5 text-[10px] font-medium text-slate-500">
-                {sessions.length}
-              </span>
-            )}
+            A
           </div>
 
-          <div className="space-y-1">
-            {sortedSessions.map((chat) => {
-              const isActive = current === chat.id;
-              const isEditing = editingId === chat.id;
-              const isMenuOpen = menuId === chat.id;
+          {/* Brand Text */}
 
-              const preview = getPreview(
-                messagesBySession[chat.id] ?? [],
-              );
+          {!collapsed && (
+            <div className="min-w-0">
+              <h1 className="text-lg font-bold tracking-tight text-white light:text-slate-900">
+                Aura AI
+              </h1>
 
-              return (
-                <div
-                  key={chat.id}
-                  className={`group relative rounded-xl transition ${
-                    isActive
-                      ? "bg-slate-800/90 shadow-sm"
-                      : "hover:bg-slate-900/80"
-                  }`}
-                >
-                  {isActive && (
-                    <span className="absolute bottom-3 left-0 top-3 w-0.5 rounded-r-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
-                  )}
+              <p className="text-xs text-slate-500">
+                Business intelligence
+              </p>
+            </div>
+          )}
+        </Link>
+      </div>
 
-                  <button
-                    type="button"
-                    onClick={() => handleSelect(chat.id)}
-                    className="w-full px-3 py-3 pr-11 text-left"
-                  >
-                    {isEditing ? (
-                      <input
-                        autoFocus
-                        value={editingTitle}
-                        onChange={(event) =>
-                          setEditingTitle(
-                            event.target.value,
-                          )
-                        }
-                        onClick={(event) =>
-                          event.stopPropagation()
-                        }
-                        onKeyDown={(event) => {
-                          if (event.key === "Enter") {
-                            event.preventDefault();
-                            saveRename(chat.id);
-                          }
+      {/* =====================================================
+          USER
+      ====================================================== */}
 
-                          if (event.key === "Escape") {
-                            event.preventDefault();
-                            cancelRename();
-                          }
-                        }}
-                        onBlur={() =>
-                          saveRename(chat.id)
-                        }
-                        className="w-full rounded-md border border-cyan-500/40 bg-slate-950 px-2 py-1 text-sm font-medium text-white outline-none ring-1 ring-cyan-500/20"
-                      />
-                    ) : (
-                      <>
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={`block min-w-0 flex-1 truncate text-sm font-medium ${
-                              isActive
-                                ? "text-white"
-                                : "text-slate-300"
-                            }`}
-                          >
-                            {chat.title}
-                          </span>
-                        </div>
+      <div
+        className={`
+          border-b
+          border-slate-800
+          py-4
+          transition-all
+          duration-300
 
-                        <span
-                          className={`mt-1.5 block truncate text-[11px] leading-4 ${
-                            isActive
-                              ? "text-slate-400"
-                              : "text-slate-600"
-                          }`}
-                        >
-                          {preview}
-                        </span>
+          light:border-slate-200
 
-                        <div className="mt-1.5 flex items-center gap-1.5">
-                          <Clock3
-                            size={10}
-                            className="text-slate-600"
-                          />
+          ${collapsed ? "px-3" : "px-4"}
+        `}
+      >
+        <div
+          className={`
+            flex
+            items-center
+            rounded-xl
+            border
+            border-slate-800
+            bg-slate-900/60
+            transition-all
+            duration-300
 
-                          <span className="text-[10px] text-slate-600">
-                            {formatRelativeTime(
-                              chat.updatedAt,
-                            )}
-                          </span>
-                        </div>
-                      </>
-                    )}
-                  </button>
+            light:border-slate-200
+            light:bg-slate-50
 
-                  {!isEditing && (
-                    <button
-                      type="button"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        setMenuId(
-                          isMenuOpen ? null : chat.id,
-                        );
-                      }}
-                      className={`absolute right-2 top-2.5 flex h-7 w-7 items-center justify-center rounded-lg transition ${
-                        isMenuOpen
-                          ? "bg-slate-700 text-white"
-                          : "text-slate-600 opacity-0 hover:bg-slate-700 hover:text-slate-200 group-hover:opacity-100"
-                      }`}
-                      aria-label="Conversation actions"
-                    >
-                      <MoreHorizontal size={16} />
-                    </button>
-                  )}
+            ${collapsed ? "justify-center p-2" : "gap-3 p-3"}
+          `}
+          title={
+            collapsed
+              ? `${user?.full_name ?? "Guest user"} ${
+                  user?.email ?? ""
+                }`
+              : undefined
+          }
+        >
+          {/* Avatar */}
 
-                  {isMenuOpen && (
-                    <div className="absolute right-2 top-10 z-30 w-36 overflow-hidden rounded-xl border border-slate-700 bg-[#111827] p-1.5 shadow-2xl shadow-black/40">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          startRename(
-                            chat.id,
-                            chat.title,
-                          )
-                        }
-                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-xs font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white"
-                      >
-                        <Pencil size={13} />
-                        Rename
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setDeleteId(chat.id);
-                          setMenuId(null);
-                        }}
-                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-xs font-medium text-red-400 transition hover:bg-red-500/10 hover:text-red-300"
-                      >
-                        <Trash2 size={13} />
-                        Delete
-                      </button>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+          <div
+            className="
+              flex
+              h-9
+              w-9
+              shrink-0
+              items-center
+              justify-center
+              rounded-lg
+              bg-gradient-to-br
+              from-cyan-400
+              to-blue-600
+              text-xs
+              font-bold
+              text-white
+            "
+          >
+            {initials}
           </div>
 
-          {/* Empty */}
-          {sessions.length === 0 && (
-            <div className="px-5 py-14 text-center">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-800 bg-slate-900/70">
-                <Sparkles
-                  size={19}
-                  className="text-slate-600"
-                />
-              </div>
+          {/* User details */}
 
-              <p className="text-sm font-medium text-slate-300">
-                No conversations yet
+          {!collapsed && (
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-slate-100 light:text-slate-900">
+                {user?.full_name ?? "Guest user"}
               </p>
 
-              <p className="mt-2 text-xs leading-5 text-slate-500">
-                Start a new analysis to explore your
-                dataset.
+              <p className="truncate text-xs text-slate-500">
+                {user?.email ?? ""}
               </p>
             </div>
           )}
         </div>
+      </div>
 
-        {/* Footer */}
-        <div className="border-t border-slate-800/80 px-5 py-4">
-          <div className="flex items-center gap-2 text-[11px] text-slate-500">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
-            AI services online
-          </div>
-        </div>
-      </aside>
+      {/* =====================================================
+          DATASET STATUS
+      ====================================================== */}
 
-      {/* Delete confirmation */}
-      {deleteId && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-2xl border border-slate-700 bg-[#0F172A] p-5 shadow-2xl shadow-black/50">
-            <div className="mb-4 flex items-start justify-between">
-              <div>
-                <h3 className="text-base font-semibold text-white">
-                  Delete conversation?
-                </h3>
+      <div
+        className={`
+          pt-4
+          transition-all
+          duration-300
 
-                <p className="mt-1 text-xs leading-5 text-slate-500">
-                  This will permanently remove the
-                  conversation and its analysis history.
+          ${collapsed ? "px-3" : "px-4"}
+        `}
+      >
+        <div
+          className={`
+            rounded-xl
+            border
+            p-3.5
+            transition-all
+            duration-300
+
+            ${
+              dataset
+                ? "border-emerald-400/20 bg-emerald-400/5 light:border-emerald-200 light:bg-emerald-50"
+                : "border-slate-800 bg-slate-900/50 light:border-slate-200 light:bg-slate-50"
+            }
+
+            ${collapsed ? "flex justify-center" : ""}
+          `}
+          title={
+            collapsed
+              ? dataset
+                ? `${dataset.rows.toLocaleString()} rows · ${dataset.columns} columns`
+                : "Upload Excel or CSV"
+              : undefined
+          }
+        >
+          <div
+            className={`
+              flex
+              items-center
+
+              ${collapsed ? "justify-center" : "gap-3"}
+            `}
+          >
+            {/* Database Icon */}
+
+            <div
+              className={`
+                flex
+                h-9
+                w-9
+                shrink-0
+                items-center
+                justify-center
+                rounded-lg
+
+                ${
+                  dataset
+                    ? "bg-emerald-400/10 light:bg-emerald-100"
+                    : "bg-slate-800 light:bg-slate-200"
+                }
+              `}
+            >
+              <Database
+                size={17}
+                className={
+                  dataset
+                    ? "text-emerald-300 light:text-emerald-600"
+                    : "text-slate-500"
+                }
+              />
+            </div>
+
+            {/* Dataset details */}
+
+            {!collapsed && (
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-slate-200 light:text-slate-800">
+                  {dataset ? "Dataset loaded" : "No dataset"}
+                </p>
+
+                <p className="mt-0.5 truncate text-xs text-slate-500">
+                  {dataset
+                    ? `${dataset.rows.toLocaleString()} rows · ${dataset.columns} columns`
+                    : "Upload Excel or CSV"}
                 </p>
               </div>
-
-              <button
-                type="button"
-                onClick={() => setDeleteId(null)}
-                className="rounded-lg p-1.5 text-slate-500 transition hover:bg-slate-800 hover:text-white"
-              >
-                <X size={16} />
-              </button>
-            </div>
-
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setDeleteId(null)}
-                className="flex-1 rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800"
-              >
-                Cancel
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  handleDelete(deleteId)
-                }
-                className="flex-1 rounded-xl bg-red-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-400"
-              >
-                Delete
-              </button>
-            </div>
+            )}
           </div>
         </div>
-      )}
-    </>
+      </div>
+
+      {/* =====================================================
+          NAVIGATION
+      ====================================================== */}
+
+      <nav className="flex-1 overflow-y-auto px-3 py-5">
+        {/* Workspace label */}
+
+        {!collapsed && (
+          <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-600">
+            Workspace
+          </p>
+        )}
+
+        <div className="space-y-1">
+          {menu.map((item) => {
+            const Icon = item.icon;
+
+            const active =
+              pathname === item.href ||
+              (item.href !== "/" &&
+                pathname.startsWith(`${item.href}/`));
+
+            return (
+              <div
+                key={item.title}
+                className="group relative"
+              >
+                <Link
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`
+                    flex
+                    items-center
+                    rounded-xl
+                    text-sm
+                    font-medium
+                    transition-all
+                    duration-200
+
+                    ${
+                      collapsed
+                        ? "h-11 justify-center"
+                        : "gap-3 px-3 py-3"
+                    }
+
+                    ${
+                      active
+                        ? "bg-gradient-to-r from-cyan-400/15 to-blue-500/15 text-white ring-1 ring-cyan-400/15 light:from-blue-50 light:to-violet-50 light:text-slate-900 light:ring-blue-200"
+                        : "text-slate-400 hover:bg-slate-900 hover:text-slate-100 light:text-slate-500 light:hover:bg-slate-100 light:hover:text-slate-900"
+                    }
+                  `}
+                >
+                  <Icon
+                    size={18}
+                    className={`
+                      shrink-0
+                      transition-colors
+
+                      ${
+                        active
+                          ? "text-cyan-300 light:text-blue-600"
+                          : "text-slate-500 group-hover:text-slate-300 light:text-slate-500 light:group-hover:text-slate-700"
+                      }
+                    `}
+                  />
+
+                  {!collapsed && (
+                    <span className="truncate">
+                      {item.title}
+                    </span>
+                  )}
+
+                  {/* Active indicator */}
+
+                  {!collapsed && active && (
+                    <span className="ml-auto h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-300 light:bg-blue-500" />
+                  )}
+                </Link>
+
+                {/* =================================================
+                    COLLAPSED TOOLTIP
+                ================================================== */}
+
+                {collapsed && (
+                  <div
+                    className="
+                      pointer-events-none
+                      absolute
+                      left-[calc(100%+10px)]
+                      top-1/2
+                      z-50
+                      -translate-y-1/2
+                      translate-x-1
+                      whitespace-nowrap
+                      rounded-lg
+                      border
+                      border-slate-700
+                      bg-slate-900
+                      px-3
+                      py-2
+                      text-xs
+                      font-semibold
+                      text-white
+                      opacity-0
+                      shadow-xl
+                      transition-all
+                      duration-200
+                      group-hover:translate-x-0
+                      group-hover:opacity-100
+
+                      light:border-slate-200
+                      light:bg-white
+                      light:text-slate-900
+                    "
+                  >
+                    {item.title}
+
+                    {/* Tooltip arrow */}
+
+                    <span
+                      className="
+                        absolute
+                        left-0
+                        top-1/2
+                        h-2
+                        w-2
+                        -translate-x-1/2
+                        -translate-y-1/2
+                        rotate-45
+                        border-b
+                        border-l
+                        border-slate-700
+                        bg-slate-900
+
+                        light:border-slate-200
+                        light:bg-white
+                      "
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* =====================================================
+            COLLAPSE BUTTON
+        ====================================================== */}
+
+        <div
+          className="
+            mt-5
+            border-t
+            border-slate-800
+            pt-4
+
+            light:border-slate-200
+          "
+        >
+          <div className="group relative">
+            <button
+              type="button"
+              onClick={() =>
+                setCollapsed((previous) => !previous)
+              }
+              className={`
+                flex
+                w-full
+                items-center
+                rounded-xl
+                border
+                border-slate-700
+                bg-slate-900/70
+                text-slate-400
+                transition-all
+                duration-200
+
+                hover:border-cyan-400/40
+                hover:bg-cyan-400/10
+                hover:text-cyan-300
+
+                focus:outline-none
+                focus:ring-2
+                focus:ring-cyan-400/30
+
+                light:border-slate-200
+                light:bg-slate-50
+                light:text-slate-500
+                light:hover:border-blue-300
+                light:hover:bg-blue-50
+                light:hover:text-blue-600
+
+                ${
+                  collapsed
+                    ? "h-11 justify-center"
+                    : "gap-3 px-3 py-2.5"
+                }
+              `}
+              title={
+                collapsed
+                  ? "Expand sidebar"
+                  : "Collapse sidebar"
+              }
+              aria-label={
+                collapsed
+                  ? "Expand sidebar"
+                  : "Collapse sidebar"
+              }
+            >
+              {/* SAME ICON AS AI CHAT */}
+
+              <MessageSquare
+                size={18}
+                className="shrink-0"
+              />
+
+              {!collapsed && (
+                <span className="text-sm font-medium">
+                  Collapse Sidebar
+                </span>
+              )}
+            </button>
+
+            {/* Collapsed tooltip */}
+
+            {collapsed && (
+              <div
+                className="
+                  pointer-events-none
+                  absolute
+                  left-[calc(100%+10px)]
+                  top-1/2
+                  z-50
+                  -translate-y-1/2
+                  translate-x-1
+                  whitespace-nowrap
+                  rounded-lg
+                  border
+                  border-slate-700
+                  bg-slate-900
+                  px-3
+                  py-2
+                  text-xs
+                  font-semibold
+                  text-white
+                  opacity-0
+                  shadow-xl
+                  transition-all
+                  duration-200
+                  group-hover:translate-x-0
+                  group-hover:opacity-100
+
+                  light:border-slate-200
+                  light:bg-white
+                  light:text-slate-900
+                "
+              >
+                Expand Sidebar
+
+                <span
+                  className="
+                    absolute
+                    left-0
+                    top-1/2
+                    h-2
+                    w-2
+                    -translate-x-1/2
+                    -translate-y-1/2
+                    rotate-45
+                    border-b
+                    border-l
+                    border-slate-700
+                    bg-slate-900
+
+                    light:border-slate-200
+                    light:bg-white
+                  "
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      </nav>
+
+      {/* =====================================================
+          BOTTOM AURA AI CARD
+      ====================================================== */}
+
+      <div
+        className={`
+          border-t
+          border-slate-800
+          transition-all
+          duration-300
+
+          light:border-slate-200
+
+          ${collapsed ? "p-3" : "p-4"}
+        `}
+      >
+        <div
+          className={`
+            rounded-xl
+            border
+            border-cyan-400/15
+            bg-gradient-to-br
+            from-cyan-400/10
+            to-blue-500/10
+
+            light:border-blue-200
+            light:from-blue-50
+            light:to-violet-50
+
+            ${
+              collapsed
+                ? "flex h-14 items-center justify-center"
+                : "p-4"
+            }
+          `}
+          title={
+            collapsed
+              ? "Aura AI — AI-powered business analysis"
+              : undefined
+          }
+        >
+          {collapsed ? (
+            <Sparkles
+              size={19}
+              className="text-cyan-300 light:text-blue-600"
+            />
+          ) : (
+            <>
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <Sparkles
+                    size={16}
+                    className="text-cyan-300 light:text-blue-600"
+                  />
+
+                  <span className="text-sm font-semibold text-slate-100 light:text-slate-900">
+                    Aura AI
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={logout}
+                  className="
+                    rounded-lg
+                    p-1.5
+                    text-slate-400
+                    transition
+
+                    hover:bg-rose-400/10
+                    hover:text-rose-300
+
+                    focus:outline-none
+                    focus:ring-2
+                    focus:ring-cyan-400
+
+                    light:text-slate-500
+                    light:hover:bg-rose-50
+                    light:hover:text-rose-500
+                  "
+                  title="Logout"
+                  aria-label="Logout"
+                >
+                  <LogOut size={16} />
+                </button>
+              </div>
+
+              <p className="mt-3 text-xs leading-5 text-slate-500">
+                AI-powered business analysis for faster
+                decisions.
+              </p>
+            </>
+          )}
+        </div>
+      </div>
+    </aside>
   );
 }
