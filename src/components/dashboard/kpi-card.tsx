@@ -1,3 +1,5 @@
+"use client";
+
 import { LucideIcon, TrendingUp } from "lucide-react";
 
 interface KpiCardProps {
@@ -11,28 +13,35 @@ interface KpiCardProps {
 
 const colorMap = {
   blue: {
-    bg: "bg-blue-50",
-    icon: "text-blue-600",
-    ring: "ring-blue-100",
-    border: "group-hover:border-blue-200",
+    iconBg: "bg-blue-500/10",
+    iconColor: "text-blue-400",
+    ring: "ring-blue-500/10",
+    glow: "group-hover:shadow-blue-500/10",
+    accent: "from-blue-500/20",
   },
+
   emerald: {
-    bg: "bg-emerald-50",
-    icon: "text-emerald-600",
-    ring: "ring-emerald-100",
-    border: "group-hover:border-emerald-200",
+    iconBg: "bg-emerald-500/10",
+    iconColor: "text-emerald-400",
+    ring: "ring-emerald-500/10",
+    glow: "group-hover:shadow-emerald-500/10",
+    accent: "from-emerald-500/20",
   },
+
   violet: {
-    bg: "bg-violet-50",
-    icon: "text-violet-600",
-    ring: "ring-violet-100",
-    border: "group-hover:border-violet-200",
+    iconBg: "bg-violet-500/10",
+    iconColor: "text-violet-400",
+    ring: "ring-violet-500/10",
+    glow: "group-hover:shadow-violet-500/10",
+    accent: "from-violet-500/20",
   },
+
   orange: {
-    bg: "bg-orange-50",
-    icon: "text-orange-600",
-    ring: "ring-orange-100",
-    border: "group-hover:border-orange-200",
+    iconBg: "bg-orange-500/10",
+    iconColor: "text-orange-400",
+    ring: "ring-orange-500/10",
+    glow: "group-hover:shadow-orange-500/10",
+    accent: "from-orange-500/20",
   },
 };
 
@@ -48,47 +57,79 @@ export default function KpiCard({
 
   return (
     <div
-      className={`group flex min-h-[220px] flex-col justify-between rounded-3xl border border-slate-200 bg-white p-8 shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${theme.border}`}
+      className={`
+        group relative flex min-h-[190px] flex-col justify-between
+        overflow-hidden rounded-[22px]
+        border border-slate-800/80
+        bg-[#0F172A]
+        p-6
+        shadow-xl shadow-black/10
+        transition-all duration-300
+        hover:-translate-y-1
+        hover:border-slate-700
+        hover:shadow-2xl
+        ${theme.glow}
+      `}
     >
-      {/* Top */}
-      <div className="flex items-start justify-between">
+      {/* Ambient glow */}
+      <div
+        className={`
+          pointer-events-none absolute -right-16 -top-16
+          h-40 w-40 rounded-full
+          bg-gradient-to-br ${theme.accent} to-transparent
+          opacity-50 blur-3xl
+          transition-opacity duration-300
+          group-hover:opacity-80
+        `}
+      />
+
+      {/* Top section */}
+      <div className="relative flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-base font-semibold text-slate-500">
+          <p className="text-xs font-medium uppercase tracking-[0.12em] text-slate-500">
             {title}
           </p>
 
-          <h2 className="mt-4 text-4xl font-bold leading-none tracking-tight text-slate-900 2xl:text-5xl">
+          <h2 className="mt-3 truncate text-3xl font-bold tracking-tight text-white lg:text-4xl">
             {value}
           </h2>
         </div>
 
+        {/* Icon */}
         <div
-          className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl ${theme.bg} ring-8 ${theme.ring}`}
+          className={`
+            flex h-12 w-12 shrink-0 items-center justify-center
+            rounded-2xl
+            ${theme.iconBg}
+            ring-8 ${theme.ring}
+          `}
         >
           <Icon
-            size={30}
-            className={theme.icon}
+            size={23}
+            strokeWidth={1.8}
+            className={theme.iconColor}
           />
         </div>
       </div>
 
       {/* Bottom */}
-      <div className="mt-8 border-t border-slate-100 pt-5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="rounded-full bg-emerald-100 p-1">
+      <div className="relative mt-8 border-t border-slate-800/80 pt-4">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-400/10">
               <TrendingUp
-                size={14}
-                className="text-emerald-600"
+                size={13}
+                strokeWidth={2.5}
+                className="text-emerald-400"
               />
-            </div>
+            </span>
 
-            <span className="text-sm font-semibold text-emerald-600">
+            <span className="truncate text-sm font-semibold text-emerald-400">
               {change}
             </span>
           </div>
 
-          <span className="text-xs font-medium text-slate-400">
+          <span className="truncate text-[11px] font-medium text-slate-500">
             {subtitle}
           </span>
         </div>

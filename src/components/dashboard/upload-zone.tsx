@@ -6,22 +6,21 @@ import {
   CheckCircle2,
   FileSpreadsheet,
   UploadCloud,
+  Sparkles,
 } from "lucide-react";
 
 interface Props {
   onFileSelect(file: File): void;
 }
 
-export default function UploadZone({
-  onFileSelect,
-}: Props) {
+export default function UploadZone({ onFileSelect }: Props) {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       if (acceptedFiles.length > 0) {
         onFileSelect(acceptedFiles[0]);
       }
     },
-    [onFileSelect]
+    [onFileSelect],
   );
 
   const {
@@ -43,97 +42,148 @@ export default function UploadZone({
   return (
     <div
       {...getRootProps()}
-      className={`group relative mt-8 overflow-hidden rounded-3xl border-2 border-dashed bg-white p-12 text-center transition-all duration-300 lg:mt-10 ${
-  isDragActive
-    ? "border-blue-600 bg-blue-50 shadow-2xl"
-    : "border-slate-300 shadow-sm hover:border-blue-500 hover:shadow-xl"
-}`}
+      className={`group relative overflow-hidden rounded-[32px] border bg-[#0F172A] px-6 py-10 text-center shadow-2xl shadow-slate-950/20 transition-all duration-300 sm:px-10 sm:py-14 lg:px-16 lg:py-16 ${
+        isDragActive
+          ? "border-cyan-400 bg-[#111C32] shadow-cyan-950/30"
+          : "border-slate-800 hover:border-cyan-400/40 hover:bg-[#111827]"
+      }`}
     >
       <input {...getInputProps()} />
 
-      <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-blue-100/40 blur-3xl" />
+      {/* =========================================================
+          BACKGROUND GLOWS
+      ========================================================== */}
+
+      <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-cyan-500/10 blur-3xl transition-all duration-500 group-hover:bg-cyan-500/15" />
+
+      <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-blue-600/10 blur-3xl" />
+
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-500/5 blur-3xl" />
 
       <div className="relative">
+        {/* =========================================================
+            ICON
+        ========================================================== */}
 
-        <div className="flex w-full justify-center">
-  <div className="flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-xl transition-transform duration-300 group-hover:scale-110">
-    <UploadCloud size={42} className="text-white" />
-  </div>
-</div>
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[24px] bg-gradient-to-br from-cyan-400 to-blue-600 shadow-xl shadow-blue-950/40 transition-all duration-300 group-hover:-translate-y-1 group-hover:scale-105">
+          <UploadCloud
+            size={38}
+            strokeWidth={1.8}
+            className="text-white"
+          />
+        </div>
 
-        <h2 className="mt-8 text-4xl font-bold tracking-tight text-slate-900">
+        {/* =========================================================
+            TITLE
+        ========================================================== */}
+
+        <h2 className="mt-7 text-3xl font-bold tracking-tight text-white sm:text-4xl">
           Upload Your Dataset
         </h2>
 
-        <p className="mx-auto max-w-2xl text-base leading-7 text-slate-500">
-          Drag & drop your business dataset or click to browse.
-          Aura AI will automatically detect KPIs, generate
-          dashboards, charts, business insights and AI reports.
+        <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">
+          Drag & drop your business dataset here or click anywhere to browse.
+          Aura AI will automatically detect your data structure and prepare it
+          for analysis.
         </p>
 
+        {/* =========================================================
+            FILE TYPES
+        ========================================================== */}
+
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <FileTypeBadge label="CSV" />
 
-          <div className="inline-flex items-center gap-2 rounded-2xl bg-slate-100 px-5 py-3 text-sm font-semibold text-slate-700">
-            <FileSpreadsheet size={18} />
-            CSV
-          </div>
+          <FileTypeBadge label="XLS" />
 
-          <div className="inline-flex items-center gap-2 rounded-2xl bg-slate-100 px-5 py-3 text-sm font-semibold text-slate-700">
-            <FileSpreadsheet size={18} />
-            XLS
-          </div>
-
-          <div className="inline-flex items-center gap-2 rounded-2xl bg-slate-100 px-5 py-3 text-sm font-semibold text-slate-700">
-            <FileSpreadsheet size={18} />
-            XLSX
-          </div>
-
+          <FileTypeBadge label="XLSX" />
         </div>
+
+        {/* =========================================================
+            BROWSE BUTTON
+        ========================================================== */}
 
         <button
           type="button"
-          className="mt-10 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-4 font-semibold text-white shadow-lg transition hover:scale-105 hover:shadow-xl"
+          className="mt-8 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:from-cyan-400 hover:to-blue-500 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-[#0F172A]"
         >
+          <UploadCloud size={18} />
           Browse Files
         </button>
 
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500">
+        {/* =========================================================
+            DIVIDER
+        ========================================================== */}
 
-          <div className="flex items-center gap-2">
-            <CheckCircle2
-              size={16}
-              className="text-emerald-500"
-            />
-            AI Analysis
-          </div>
+        <div className="mx-auto mt-10 flex max-w-xl items-center gap-4">
+          <div className="h-px flex-1 bg-slate-800" />
 
-          <div className="flex items-center gap-2">
-            <CheckCircle2
-              size={16}
-              className="text-emerald-500"
-            />
-            KPI Detection
-          </div>
+          <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-600">
+            Aura AI will handle the rest
+          </span>
 
-          <div className="flex items-center gap-2">
-            <CheckCircle2
-              size={16}
-              className="text-emerald-500"
-            />
-            Smart Charts
-          </div>
-
-          <div className="flex items-center gap-2">
-            <CheckCircle2
-              size={16}
-              className="text-emerald-500"
-            />
-            AI Reports
-          </div>
-
+          <div className="h-px flex-1 bg-slate-800" />
         </div>
 
+        {/* =========================================================
+            CAPABILITIES
+        ========================================================== */}
+
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-x-7 gap-y-4">
+          <Capability label="AI Analysis" />
+
+          <Capability label="KPI Detection" />
+
+          <Capability label="Smart Charts" />
+
+          <Capability label="AI Reports" />
+        </div>
+
+        {/* =========================================================
+            DRAG STATE
+        ========================================================== */}
+
+        {isDragActive && (
+          <div className="mt-7 inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-xs font-medium text-cyan-300">
+            <Sparkles size={14} />
+            Drop your dataset to begin
+          </div>
+        )}
       </div>
+    </div>
+  );
+}
+
+/* ===============================================================
+   FILE TYPE BADGE
+================================================================ */
+
+function FileTypeBadge({ label }: { label: string }) {
+  return (
+    <div className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900/80 px-4 py-2.5 text-xs font-semibold text-slate-300 transition-all duration-200 group-hover:border-slate-600">
+      <FileSpreadsheet
+        size={16}
+        className="text-cyan-400"
+      />
+
+      {label}
+    </div>
+  );
+}
+
+/* ===============================================================
+   CAPABILITY
+================================================================ */
+
+function Capability({ label }: { label: string }) {
+  return (
+    <div className="flex items-center gap-2 text-xs font-medium text-slate-500">
+      <CheckCircle2
+        size={15}
+        className="text-emerald-400"
+      />
+
+      {label}
     </div>
   );
 }

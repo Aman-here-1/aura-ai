@@ -28,8 +28,6 @@ export default function UploadPageContent() {
   const router = useRouter();
 
   const [file, setFile] = useState<File | null>(null);
-
-  // Local state: this controls the skeleton screen.
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [seconds, setSeconds] = useState(0);
 
@@ -58,7 +56,6 @@ export default function UploadPageContent() {
     const startTime = Date.now();
 
     try {
-      // Skeleton appears immediately.
       setIsAnalyzing(true);
       setLoading(true);
       setError(null);
@@ -73,7 +70,7 @@ export default function UploadPageContent() {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
       );
 
       setDataset(data);
@@ -101,13 +98,12 @@ export default function UploadPageContent() {
         aiReport,
       });
 
-      // Keeps skeleton visible briefly if API returns extremely fast.
       const elapsed = Date.now() - startTime;
       const minimumLoaderTime = 800;
 
       if (elapsed < minimumLoaderTime) {
         await new Promise((resolve) =>
-          setTimeout(resolve, minimumLoaderTime - elapsed)
+          setTimeout(resolve, minimumLoaderTime - elapsed),
         );
       }
 
@@ -133,53 +129,91 @@ export default function UploadPageContent() {
     ];
 
   return (
-    <div className="space-y-8">
-{isAnalyzing && (
-  <DashboardLoadingSkeleton
-    message={currentMessage}
-    seconds={seconds}
-  />
-)}
+    <div className="flex flex-col gap-7 sm:gap-8 lg:gap-10">
+      {/* =========================================================
+          ANALYSIS LOADING
+      ========================================================== */}
 
-      <UploadZone onFileSelect={setFile} />
+      {isAnalyzing && (
+        <DashboardLoadingSkeleton
+          message={currentMessage}
+          seconds={seconds}
+        />
+      )}
+
+      {/* =========================================================
+          UPLOAD ZONE
+      ========================================================== */}
+
+      <section>
+        <UploadZone onFileSelect={setFile} />
+      </section>
+
+      {/* =========================================================
+          FILE PREVIEW + ANALYSIS ACTION
+      ========================================================== */}
 
       {file && (
-        <div className="space-y-6">
+        <section className="flex flex-col gap-6">
           <FilePreview file={file} />
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <h3 className="text-xl font-bold text-slate-900">
-                  Ready to Analyze
-                </h3>
+          <div className="rounded-3xl border border-slate-800 bg-[#0F172A] p-6 shadow-xl shadow-slate-950/20 sm:p-7">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+              {/* Information */}
 
-                <p className="mt-2 text-slate-500">
-                  Aura AI will generate KPIs, charts, and insights.
+              <div className="min-w-0">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-400/10 ring-1 ring-cyan-400/20">
+                    <Loader2
+                      size={19}
+                      className={
+                        isAnalyzing
+                          ? "animate-spin text-cyan-400"
+                          : "text-cyan-400"
+                      }
+                    />
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-semibold text-white">
+                      Ready to Analyze
+                    </h3>
+
+                    <p className="text-xs text-slate-500">
+                      Dataset prepared for Aura AI
+                    </p>
+                  </div>
+                </div>
+
+                <p className="mt-4 max-w-xl text-sm leading-6 text-slate-400">
+                  Aura AI will analyze your dataset and generate KPIs,
+                  charts, business insights, anomalies and recommendations.
                 </p>
               </div>
+
+              {/* Action */}
 
               <button
                 type="button"
                 onClick={uploadFile}
                 disabled={isAnalyzing}
-                className="inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-4 font-semibold text-white shadow-lg disabled:cursor-not-allowed disabled:opacity-70"
+                className="inline-flex shrink-0 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 transition-all duration-300 hover:-translate-y-0.5 hover:from-cyan-400 hover:to-blue-500 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-[#0F172A] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isAnalyzing ? (
                   <>
-                    <Loader2 size={20} className="animate-spin" />
+                    <Loader2 size={19} className="animate-spin" />
                     Analyzing Dataset...
                   </>
                 ) : (
                   <>
                     Analyze Dataset
-                    <ArrowRight size={20} />
+                    <ArrowRight size={19} />
                   </>
                 )}
               </button>
             </div>
           </div>
-        </div>
+        </section>
       )}
     </div>
   );

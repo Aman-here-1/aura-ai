@@ -11,50 +11,50 @@ export default function DataPreview() {
   const { dataset } = useDatasetStore();
 
   const headers: string[] = dataset?.headers ?? [];
+
   const rows: Record<string, any>[] =
     dataset?.preview ?? [];
 
   return (
-    <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+    <section className="overflow-hidden rounded-[28px] border border-slate-800/90 bg-[#111827] shadow-[0_20px_60px_rgba(0,0,0,0.22)]">
 
       {/* Header */}
+      <div className="flex flex-col gap-4 border-b border-slate-800 px-6 py-6 md:flex-row md:items-center md:justify-between">
 
-      <div className="flex flex-col gap-4 border-b border-slate-100 px-6 py-5 md:flex-row md:items-center md:justify-between">
+        <div className="flex items-center gap-4">
 
-        <div>
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-400/10 ring-1 ring-blue-400/20">
 
-          <div className="flex items-center gap-3">
+            <Table2
+              size={21}
+              className="text-blue-400"
+            />
 
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-100">
-              <Table2
-                size={22}
-                className="text-blue-600"
-              />
-            </div>
+          </div>
 
-            <div>
-              <h2 className="text-2xl font-bold text-slate-900">
-                Data Preview
-              </h2>
+          <div>
 
-              <p className="mt-1 text-sm text-slate-500">
-                First few records from the uploaded
-                dataset.
-              </p>
-            </div>
+            <h2 className="text-2xl font-bold tracking-tight text-white">
+              Data Preview
+            </h2>
+
+            <p className="mt-1 text-sm text-slate-400">
+              First few records from the uploaded dataset.
+            </p>
 
           </div>
 
         </div>
 
-        <div className="inline-flex items-center gap-2 rounded-2xl bg-blue-50 px-4 py-2">
+        {/* Preview count */}
+        <div className="inline-flex w-fit items-center gap-2 rounded-xl border border-blue-400/20 bg-blue-400/10 px-4 py-2">
 
           <Database
-            size={18}
-            className="text-blue-600"
+            size={16}
+            className="text-blue-400"
           />
 
-          <span className="text-sm font-semibold text-blue-700">
+          <span className="text-xs font-semibold text-blue-300">
             {rows.length} Preview Rows
           </span>
 
@@ -63,61 +63,97 @@ export default function DataPreview() {
       </div>
 
       {/* Empty */}
-
       {!dataset ? (
-        <div className="flex h-72 flex-col items-center justify-center gap-4">
 
-          <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-slate-100">
+        <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-12 text-center">
+
+          <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-slate-800/80 ring-1 ring-slate-700">
+
             <Table2
-              size={36}
-              className="text-slate-400"
+              size={34}
+              className="text-slate-500"
             />
+
           </div>
 
-          <h3 className="text-xl font-semibold text-slate-800">
+          <h3 className="mt-6 text-xl font-semibold text-white">
             No Dataset Uploaded
           </h3>
 
-          <p className="max-w-md text-center text-slate-500">
+          <p className="mt-3 max-w-md text-sm leading-6 text-slate-500">
             Upload a CSV or Excel file to preview
             your business data before analysis.
           </p>
 
         </div>
+
       ) : (
+
         <div className="overflow-x-auto">
 
-          <table className="min-w-full">
+          {rows.length === 0 ? (
 
-            <thead className="sticky top-0 bg-slate-50">
+            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-12 text-center">
 
-              <tr>
+              <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-slate-800/80 ring-1 ring-slate-700">
 
-                {headers.map((header) => (
-                  <th
-                    key={header}
-                    className="border-b border-slate-200 px-5 py-4 text-left text-sm font-bold text-slate-700 whitespace-nowrap"
-                  >
-                    {header}
-                  </th>
-                ))}
+                <Table2
+                  size={34}
+                  className="text-slate-500"
+                />
 
-              </tr>
+              </div>
 
-            </thead>
+              <h3 className="mt-6 text-xl font-semibold text-white">
+                No Preview Data
+              </h3>
 
-            <tbody>
+              <p className="mt-3 max-w-md text-sm leading-6 text-slate-500">
+                The dataset was uploaded successfully,
+                but no preview records are currently available.
+              </p>
 
-              {rows.length > 0 ? (
-                rows.map((row, index) => (
+            </div>
+
+          ) : (
+
+            <table className="min-w-full">
+
+              {/* Table Header */}
+              <thead className="bg-[#0D1424]">
+
+                <tr>
+
+                  {headers.map((header) => (
+
+                    <th
+                      key={header}
+                      className="whitespace-nowrap border-b border-slate-800 px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-400"
+                    >
+                      {header}
+                    </th>
+
+                  ))}
+
+                </tr>
+
+              </thead>
+
+              {/* Table Body */}
+              <tbody>
+
+                {rows.map((row, index) => (
+
                   <tr
                     key={index}
-                    className="transition hover:bg-blue-50/40"
+                    className="transition-colors duration-200 hover:bg-cyan-400/[0.03]"
                   >
+
                     {headers.map((header) => (
+
                       <td
                         key={header}
-                        className="border-b border-slate-100 px-5 py-4 text-sm text-slate-700 whitespace-nowrap"
+                        className="whitespace-nowrap border-b border-slate-800/70 px-5 py-4 text-sm text-slate-300"
                       >
                         {row[header] !== null &&
                         row[header] !== undefined &&
@@ -125,29 +161,21 @@ export default function DataPreview() {
                           ? String(row[header])
                           : "-"}
                       </td>
+
                     ))}
+
                   </tr>
-                ))
-              ) : (
-                <tr>
 
-                  <td
-                    colSpan={
-                      headers.length || 1
-                    }
-                    className="py-16 text-center text-slate-500"
-                  >
-                    No preview data available.
-                  </td>
+                ))}
 
-                </tr>
-              )}
+              </tbody>
 
-            </tbody>
+            </table>
 
-          </table>
+          )}
 
         </div>
+
       )}
 
     </section>

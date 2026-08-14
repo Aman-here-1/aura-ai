@@ -39,9 +39,7 @@ export default function AnalysisSummary() {
           0,
           Math.round(
             100 -
-              ((duplicateRows + totalMissing) /
-                rows) *
-                100
+              ((duplicateRows + totalMissing) / rows) * 100
           )
         );
 
@@ -50,184 +48,195 @@ export default function AnalysisSummary() {
       title: "Rows",
       value: rows.toLocaleString(),
       icon: Database,
-      bg: "bg-blue-50",
-      iconColor: "text-blue-600",
-      ring: "ring-blue-100",
+      iconColor: "text-cyan-400",
+      bg: "bg-cyan-400/10",
+      border: "border-cyan-400/15",
     },
     {
       title: "Columns",
       value: columns.toString(),
       icon: Columns3,
-      bg: "bg-violet-50",
-      iconColor: "text-violet-600",
-      ring: "ring-violet-100",
+      iconColor: "text-violet-400",
+      bg: "bg-violet-400/10",
+      border: "border-violet-400/15",
     },
     {
       title: "Missing Values",
       value: totalMissing.toLocaleString(),
       icon: AlertTriangle,
-      bg: "bg-orange-50",
-      iconColor: "text-orange-600",
-      ring: "ring-orange-100",
+      iconColor: "text-amber-400",
+      bg: "bg-amber-400/10",
+      border: "border-amber-400/15",
     },
     {
       title: "Duplicate Rows",
       value: duplicateRows.toLocaleString(),
       icon: CopyCheck,
-      bg: "bg-emerald-50",
-      iconColor: "text-emerald-600",
-      ring: "ring-emerald-100",
+      iconColor: "text-emerald-400",
+      bg: "bg-emerald-400/10",
+      border: "border-emerald-400/15",
     },
   ];
 
   return (
-    <section className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-sm">
+    <section className="overflow-hidden rounded-3xl border border-slate-800/80 bg-[#0F172A] shadow-2xl shadow-black/20">
+      {/* =====================================================
+          HEADER
+      ====================================================== */}
 
-      {/* Header */}
+      <div className="relative overflow-hidden border-b border-slate-800/80 px-7 py-7 sm:px-8">
+        {/* Background glow */}
 
-      <div className="border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white px-8 py-7">
+        <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-cyan-500/5 blur-3xl" />
 
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="pointer-events-none absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-violet-500/5 blur-3xl" />
+
+        <div className="relative flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
+          {/* Left */}
 
           <div>
-
-            <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold text-blue-700">
-
-              <Sparkles size={16} />
+            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-xs font-semibold text-cyan-300">
+              <Sparkles size={15} />
 
               Executive Dataset Summary
-
             </div>
 
-            <h2 className="mt-5 text-3xl font-bold text-slate-900">
+            <h2 className="mt-5 text-2xl font-bold tracking-tight text-white sm:text-3xl">
               AI Dataset Overview
             </h2>
 
-            <p className="mt-2 max-w-2xl text-slate-500">
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
               Aura AI inspected your dataset structure,
               quality and completeness before generating
               business insights.
             </p>
-
           </div>
 
-          <div className="rounded-3xl border border-emerald-200 bg-emerald-50 px-8 py-6">
+          {/* Dataset Health */}
 
+          <div className="shrink-0 rounded-3xl border border-emerald-400/20 bg-emerald-400/[0.06] px-6 py-5">
             <div className="flex items-center gap-4">
-
-              <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-emerald-100">
+              <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-400/10">
+                <div className="absolute inset-0 rounded-2xl bg-emerald-400/5 blur-lg" />
 
                 <ShieldCheck
-                  size={30}
-                  className="text-emerald-600"
+                  size={27}
+                  className="relative text-emerald-400"
                 />
-
               </div>
 
               <div>
-
-                <p className="text-sm text-slate-500">
+                <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
                   Dataset Health
                 </p>
 
-                <h2 className="text-4xl font-bold text-emerald-700">
+                <h2 className="mt-1 text-3xl font-bold text-emerald-400">
                   {quality}%
                 </h2>
-
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
 
-      {/* KPI Cards */}
+      {/* =====================================================
+          KPI CARDS
+      ====================================================== */}
 
-      <div className="grid gap-7 p-8 md:grid-cols-2 xl:grid-cols-4">
-
+      <div className="grid gap-4 p-7 sm:grid-cols-2 sm:gap-5 sm:p-8 xl:grid-cols-4">
         {cards.map((card) => {
           const Icon = card.icon;
 
           return (
             <div
               key={card.title}
-              className="group rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+              className={`group rounded-2xl border ${card.border} bg-[#111827]/70 p-6 transition-all duration-300 hover:-translate-y-1 hover:bg-[#131E31] hover:shadow-xl hover:shadow-black/10`}
             >
-
-              <div className="flex items-start justify-between">
-
-                <div>
-
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
                   <p className="text-sm font-medium text-slate-500">
                     {card.title}
                   </p>
 
-                  <h3 className="mt-5 text-5xl font-bold text-slate-900">
+                  <h3 className="mt-4 truncate text-3xl font-bold tracking-tight text-white sm:text-4xl">
                     {card.value}
                   </h3>
-
                 </div>
 
                 <div
-                  className={`flex h-16 w-16 items-center justify-center rounded-3xl ${card.bg} ring-8 ${card.ring}`}
+                  className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border ${card.border} ${card.bg}`}
                 >
-
                   <Icon
-                    size={30}
+                    size={23}
                     className={card.iconColor}
                   />
-
                 </div>
-
               </div>
 
+              <div className="mt-5 h-px bg-slate-800/80" />
+
+              <p className="mt-4 text-xs text-slate-600">
+                Detected from uploaded dataset
+              </p>
             </div>
           );
         })}
-
       </div>
 
-      {/* AI Summary */}
+      {/* =====================================================
+          AI SUMMARY
+      ====================================================== */}
 
-      <div className="border-t border-slate-100 bg-gradient-to-r from-blue-50 via-indigo-50 to-white p-8">
+      <div className="border-t border-slate-800/80 bg-gradient-to-r from-cyan-400/[0.04] via-blue-500/[0.03] to-violet-500/[0.04] p-7 sm:p-8">
+        <div className="flex flex-col gap-5 sm:flex-row">
+          {/* Icon */}
 
-        <div className="flex gap-5">
-
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-blue-100">
+          <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-cyan-400/20 bg-cyan-400/10">
+            <div className="absolute inset-0 rounded-2xl bg-cyan-400/5 blur-lg" />
 
             <TrendingUp
-              className="text-blue-600"
-              size={30}
+              className="relative text-cyan-400"
+              size={25}
             />
-
           </div>
 
-          <div>
+          {/* Content */}
 
-            <h3 className="text-xl font-bold text-slate-900">
-              AI Executive Summary
-            </h3>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-3">
+              <h3 className="text-lg font-bold text-white sm:text-xl">
+                AI Executive Summary
+              </h3>
 
-            <p className="mt-3 text-base leading-8 text-slate-600">
+              <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-300">
+                AI Generated
+              </span>
+            </div>
+
+            <p className="mt-3 max-w-5xl text-sm leading-7 text-slate-400 sm:text-base">
               Your uploaded dataset contains{" "}
-              <strong>{rows.toLocaleString()}</strong> records and{" "}
-              <strong>{columns}</strong> columns.
-              Aura AI detected{" "}
-              <strong>{totalMissing}</strong> missing values and{" "}
-              <strong>{duplicateRows}</strong> duplicate rows before
-              building KPIs, dashboards, trend analysis,
-              recommendations and executive insights.
+              <strong className="font-semibold text-slate-200">
+                {rows.toLocaleString()}
+              </strong>{" "}
+              records and{" "}
+              <strong className="font-semibold text-slate-200">
+                {columns}
+              </strong>{" "}
+              columns. Aura AI detected{" "}
+              <strong className="font-semibold text-amber-400">
+                {totalMissing}
+              </strong>{" "}
+              missing values and{" "}
+              <strong className="font-semibold text-emerald-400">
+                {duplicateRows}
+              </strong>{" "}
+              duplicate rows before building KPIs,
+              dashboards, trend analysis, recommendations
+              and executive insights.
             </p>
-
           </div>
-
         </div>
-
       </div>
-
     </section>
   );
 }

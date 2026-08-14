@@ -1,23 +1,17 @@
 import {
-  LayoutDashboard,
-  Upload,
-  Sparkles,
-  FileText,
-  MessageSquareText,
   BarChart3,
+  Bot,
+  ChartNoAxesCombined,
+  FileBarChart,
   FolderKanban,
-  UserCircle,
+  LayoutDashboard,
+  MessageSquare,
   Settings,
-  type LucideIcon,
+  UserCircle,
+  Upload,
 } from "lucide-react";
 
-export interface MenuItem {
-  title: string;
-  href: string;
-  icon: LucideIcon;
-}
-
-export const menu: MenuItem[] = [
+export const menu = [
   {
     title: "Dashboard",
     href: "/",
@@ -31,22 +25,22 @@ export const menu: MenuItem[] = [
   {
     title: "AI Analyst",
     href: "/analysis",
-    icon: Sparkles,
+    icon: Bot,
   },
   {
     title: "AI Chat",
     href: "/chat",
-    icon: MessageSquareText,
+    icon: MessageSquare,
   },
   {
     title: "Analytics",
     href: "/analytics",
-    icon: BarChart3,
+    icon: ChartNoAxesCombined,
   },
   {
     title: "Reports",
     href: "/reports",
-    icon: FileText,
+    icon: FileBarChart,
   },
   {
     title: "Projects",

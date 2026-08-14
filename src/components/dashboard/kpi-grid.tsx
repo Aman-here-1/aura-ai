@@ -62,7 +62,7 @@ export default function KpiGrid() {
   ];
 
   return (
-    <section className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+    <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
       {cards.map((card) => (
         <KpiCard
           key={card.title}

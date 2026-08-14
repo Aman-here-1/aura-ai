@@ -42,6 +42,10 @@ export default function InsightList() {
     0
   );
 
+  const hasDataQualityIssues =
+    totalMissingValues > 0 ||
+    duplicateRows > 0;
+
   const insights = [
     {
       title: "Business Performance",
@@ -49,27 +53,25 @@ export default function InsightList() {
         totalRevenue
       ).toLocaleString("en-IN")}.`,
       icon: TrendingUp,
-      bg: "bg-emerald-100",
-      text: "text-emerald-600",
+      iconBg: "bg-emerald-400/10",
+      iconColor: "text-emerald-400",
+      border: "border-emerald-400/20",
     },
     {
       title: "Data Quality",
-      description:
-        totalMissingValues > 0 ||
-        duplicateRows > 0
-          ? `${totalMissingValues.toLocaleString()} missing values and ${duplicateRows.toLocaleString()} duplicate rows detected.`
-          : "Excellent! No missing values or duplicate rows detected.",
+      description: hasDataQualityIssues
+        ? `${totalMissingValues.toLocaleString()} missing values and ${duplicateRows.toLocaleString()} duplicate rows detected.`
+        : "Excellent! No missing values or duplicate rows detected.",
       icon: TriangleAlert,
-      bg:
-        totalMissingValues > 0 ||
-        duplicateRows > 0
-          ? "bg-orange-100"
-          : "bg-emerald-100",
-      text:
-        totalMissingValues > 0 ||
-        duplicateRows > 0
-          ? "text-orange-600"
-          : "text-emerald-600",
+      iconBg: hasDataQualityIssues
+        ? "bg-amber-400/10"
+        : "bg-emerald-400/10",
+      iconColor: hasDataQualityIssues
+        ? "text-amber-400"
+        : "text-emerald-400",
+      border: hasDataQualityIssues
+        ? "border-amber-400/20"
+        : "border-emerald-400/20",
     },
     {
       title: "AI Recommendation",
@@ -77,25 +79,43 @@ export default function InsightList() {
         averageOrderValue
       ).toLocaleString("en-IN")}. Consider increasing inventory and marketing investment in this region.`,
       icon: Lightbulb,
-      bg: "bg-blue-100",
-      text: "text-blue-600",
+      iconBg: "bg-blue-400/10",
+      iconColor: "text-blue-400",
+      border: "border-blue-400/20",
     },
   ];
 
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white shadow-sm">
+    <section className="overflow-hidden rounded-[28px] border border-slate-800/90 bg-[#111827] shadow-[0_20px_60px_rgba(0,0,0,0.22)]">
 
-      <div className="border-b border-slate-100 px-6 py-5">
-        <h2 className="text-2xl font-bold text-slate-900">
-          AI Insights
-        </h2>
+      {/* Header */}
+      <div className="border-b border-slate-800 px-6 py-6">
 
-        <p className="mt-1 text-sm text-slate-500">
-          Automatically generated business insights.
-        </p>
+        <div className="flex items-center gap-4">
+
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-400/10 ring-1 ring-cyan-400/20">
+            <TrendingUp
+              size={21}
+              className="text-cyan-400"
+            />
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-white">
+              AI Insights
+            </h2>
+
+            <p className="mt-1 text-sm text-slate-400">
+              Automatically generated business insights.
+            </p>
+          </div>
+
+        </div>
+
       </div>
 
-      <div className="space-y-5 p-6">
+      {/* Insights */}
+      <div className="space-y-4 p-6">
 
         {insights.map((item) => {
           const Icon = item.icon;
@@ -103,44 +123,54 @@ export default function InsightList() {
           return (
             <div
               key={item.title}
-              className="rounded-3xl border border-slate-200 p-5 transition-all duration-300 hover:shadow-md"
+              className={`group rounded-2xl border ${item.border} bg-[#0F172A] p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-400/30 hover:bg-[#131D31] hover:shadow-[0_12px_30px_rgba(0,0,0,0.18)]`}
             >
-              <div className="flex gap-5">
 
+              <div className="flex gap-4">
+
+                {/* Icon */}
                 <div
-                  className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${item.bg}`}
+                  className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${item.iconBg} ring-1 ring-white/5`}
                 >
                   <Icon
-                    size={28}
-                    className={item.text}
+                    size={24}
+                    className={item.iconColor}
                   />
                 </div>
 
-                <div>
-                  <h3 className="text-lg font-semibold text-slate-900">
+                {/* Content */}
+                <div className="min-w-0">
+
+                  <h3 className="text-base font-semibold text-white">
                     {item.title}
                   </h3>
 
-                  <p className="mt-2 leading-7 text-slate-600">
+                  <p className="mt-2 text-sm leading-6 text-slate-400">
                     {item.description}
                   </p>
+
                 </div>
 
               </div>
+
             </div>
           );
         })}
 
       </div>
 
-      <div className="border-t border-slate-100 p-6">
+      {/* Footer */}
+      <div className="border-t border-slate-800 bg-[#0D1424] p-6">
+
         <button
+          type="button"
           onClick={() => router.push("/reports")}
-          className="inline-flex items-center gap-3 rounded-2xl bg-blue-600 px-6 py-3 font-semibold text-white transition-all duration-300 hover:bg-blue-700 hover:shadow-lg"
+          className="inline-flex items-center gap-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-900/20 transition-all duration-300 hover:-translate-y-0.5 hover:from-cyan-400 hover:to-blue-500 hover:shadow-xl"
         >
-          <Download size={20} />
+          <Download size={18} />
           View Full AI Report
         </button>
+
       </div>
 
     </section>

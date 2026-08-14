@@ -3,15 +3,24 @@
 import { askAuraAI } from "../lib/api/chat";
 import { useAnalysisStore } from "../store/analysis-store";
 import { useChatStore } from "../store/chat-store";
+import { useChatSessionStore } from "../hooks/chat-session-store";
 
 export function useChat() {
   const { analysis } = useAnalysisStore();
 
-  const {
-    addUserMessage,
-    addAssistantMessage,
-    setLoading,
-  } = useChatStore();
+  const current = useChatSessionStore((state) => state.current);
+
+  const addUserMessage = useChatStore(
+    (state) => state.addUserMessage,
+  );
+
+  const addAssistantMessage = useChatStore(
+    (state) => state.addAssistantMessage,
+  );
+
+  const setLoading = useChatStore(
+    (state) => state.setLoading,
+  );
 
   async function sendQuestion(question: string) {
     const trimmedQuestion = question.trim();
@@ -20,12 +29,20 @@ export function useChat() {
       return;
     }
 
+    if (!current) {
+      alert("Please start a new analysis first.");
+      return;
+    }
+
     if (!analysis) {
       alert("No analysis found. Please upload a dataset first.");
       return;
     }
 
-    addUserMessage(trimmedQuestion);
+    // IMPORTANT:
+    // Save user message inside CURRENT SESSION
+    addUserMessage(current, trimmedQuestion);
+
     setLoading(true);
 
     try {
@@ -36,7 +53,9 @@ export function useChat() {
         intelligence: analysis.intelligence,
       });
 
-      addAssistantMessage({
+      // IMPORTANT:
+      // Save AI response inside SAME SESSION
+      addAssistantMessage(current, {
         id: crypto.randomUUID(),
         role: "assistant",
         content: response.explanation,
@@ -52,7 +71,7 @@ export function useChat() {
         suggestions: response.suggestions,
       });
     } catch (error) {
-      addAssistantMessage({
+      addAssistantMessage(current, {
         id: crypto.randomUUID(),
         role: "assistant",
         content:

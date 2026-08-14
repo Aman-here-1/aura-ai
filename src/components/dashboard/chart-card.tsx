@@ -19,76 +19,72 @@ export default function ChartCard({
   return (
     <section
       className={`
-        rounded-3xl
+        group
+        overflow-hidden
+        rounded-[28px]
         border
-        border-slate-200
-        bg-white
-        shadow-sm
+        border-slate-800
+        bg-[#0B1120]
+        shadow-2xl
+        shadow-black/20
         transition-all
         duration-300
-        hover:-translate-y-1
-        hover:shadow-xl
+        hover:border-slate-700
+        hover:shadow-black/30
         ${className}
       `}
     >
-      {/* Header */}
-
-      <div className="flex items-start justify-between border-b border-slate-100 px-8 py-7">
-
+      {/* =====================================================
+          HEADER
+      ====================================================== */}
+      <div className="flex items-start justify-between border-b border-slate-800 px-6 py-5 sm:px-7 sm:py-6">
         <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-2 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.7)]" />
 
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900">
-
-            {title}
-
-          </h2>
+            <h2 className="text-lg font-semibold tracking-tight text-white sm:text-xl">
+              {title}
+            </h2>
+          </div>
 
           {subtitle && (
-
-            <p className="mt-2 text-base leading-6 text-slate-500">
-
+            <p className="mt-2 text-sm leading-5 text-slate-500">
               {subtitle}
-
             </p>
-
           )}
-
         </div>
 
         {action ? (
-
           action
-
         ) : (
-
           <button
+            type="button"
+            aria-label="More options"
             className="
-              rounded-2xl
-              p-3
+              shrink-0
+              rounded-xl
+              border
+              border-transparent
+              p-2
               text-slate-500
               transition-all
-              duration-300
-              hover:bg-slate-100
-              hover:text-slate-700
+              duration-200
+              hover:border-slate-700
+              hover:bg-slate-800
+              hover:text-slate-200
             "
           >
-
-            <MoreHorizontal size={20} />
-
+            <MoreHorizontal size={19} />
           </button>
-
         )}
-
       </div>
 
-      {/* Body */}
-
-      <div className="p-8">
-
+      {/* =====================================================
+          BODY
+      ====================================================== */}
+      <div className="p-5 sm:p-7">
         {children}
-
       </div>
-
     </section>
   );
 }

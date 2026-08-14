@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export interface ChatChart {
   type: string;
@@ -128,9 +129,11 @@ export interface ChatMessage {
   id: string;
   role: "user" | "assistant";
   content: string;
+
   sql?: string;
   rows?: Record<string, unknown>[];
   columns?: string[];
+
   chart?: ChatChart | null;
   insight?: ChatInsight | null;
   executive?: ExecutiveSummary | null;
@@ -141,44 +144,96 @@ export interface ChatMessage {
 }
 
 interface ChatState {
-  messages: ChatMessage[];
+  messagesBySession: Record<string, ChatMessage[]>;
   loading: boolean;
 
-  addUserMessage: (message: string) => void;
-  addAssistantMessage: (message: ChatMessage) => void;
+  addUserMessage: (sessionId: string, message: string) => void;
+  addAssistantMessage: (
+    sessionId: string,
+    message: ChatMessage,
+  ) => void;
+
   setLoading: (loading: boolean) => void;
-  clearChat: () => void;
+
+  getMessages: (sessionId: string) => ChatMessage[];
+
+  clearChat: (sessionId: string) => void;
+  deleteChat: (sessionId: string) => void;
 }
 
-export const useChatStore = create<ChatState>((set) => ({
-  messages: [],
-  loading: false,
+export const useChatStore = create<ChatState>()(
+  persist(
+    (set, get) => ({
+      messagesBySession: {},
+      loading: false,
 
-  addUserMessage: (message) =>
-    set((state) => ({
-      messages: [
-        ...state.messages,
-        {
+      addUserMessage: (sessionId, message) => {
+        const chatMessage: ChatMessage = {
           id: crypto.randomUUID(),
           role: "user",
           content: message,
-        },
-      ],
-    })),
+        };
 
-  addAssistantMessage: (message) =>
-    set((state) => ({
-      messages: [...state.messages, message],
-    })),
+        set((state) => ({
+          messagesBySession: {
+            ...state.messagesBySession,
+            [sessionId]: [
+              ...(state.messagesBySession[sessionId] ?? []),
+              chatMessage,
+            ],
+          },
+        }));
+      },
 
-  setLoading: (loading) =>
-    set({
-      loading,
+      addAssistantMessage: (sessionId, message) => {
+        set((state) => ({
+          messagesBySession: {
+            ...state.messagesBySession,
+            [sessionId]: [
+              ...(state.messagesBySession[sessionId] ?? []),
+              message,
+            ],
+          },
+        }));
+      },
+
+      setLoading: (loading) => {
+        set({
+          loading,
+        });
+      },
+
+      getMessages: (sessionId) => {
+        return get().messagesBySession[sessionId] ?? [];
+      },
+
+      clearChat: (sessionId) => {
+        set((state) => ({
+          loading: false,
+          messagesBySession: {
+            ...state.messagesBySession,
+            [sessionId]: [],
+          },
+        }));
+      },
+
+      deleteChat: (sessionId) => {
+        set((state) => {
+          const nextMessages = {
+            ...state.messagesBySession,
+          };
+
+          delete nextMessages[sessionId];
+
+          return {
+            messagesBySession: nextMessages,
+            loading: false,
+          };
+        });
+      },
     }),
-
-  clearChat: () =>
-    set({
-      loading: false,
-      messages: [],
-    }),
-}));
+    {
+      name: "aura-ai-chat-messages",
+    },
+  ),
+);
